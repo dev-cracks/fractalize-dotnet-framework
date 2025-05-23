@@ -1,0 +1,17 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net9.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+		<Authors>FractalTech</Authors>
+		<Company>FractalTech</Company>
+		<PackageId>FractalTech.Fractalize.Infrastructure</PackageId>
+		<Version>1.0.0</Version>
+		<Description>Utility library for Fractalize framework</Description>
+		<PackageTags>fractalize;utils;framework</PackageTags>
+		<PackageOutputPath>./nupkg</PackageOutputPath>
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+	</PropertyGroup>
+
+</Project>
