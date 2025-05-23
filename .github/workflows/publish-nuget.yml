@@ -28,7 +28,7 @@ jobs:
     - name: Setup .NET SDK
       uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: '8.0.x' # O la versión de .NET que uses (ej: 6.0.x, 7.0.x)
+        dotnet-version: '9.0.x' # O la versión de .NET que uses (ej: 6.0.x, 7.0.x)
 
     - name: Get Project Version (from .csproj)
       id: get_version
