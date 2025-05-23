@@ -1,0 +1,76 @@
+name: Publish NuGet Package
+
+on:
+  push:
+    branches:
+      - main # O la rama que uses para los despliegues (ej: master, release)
+    paths:
+      # Disparar si cambian los archivos .csproj o .cs dentro de la carpeta src
+      - 'src/**/*.csproj'
+      - 'src/**/*.cs'
+  workflow_dispatch: {} # Permite ejecutar el workflow manualmente desde GitHub
+
+env:
+  BUILD_CONFIGURATION: Release # Configuración de compilación (Release o Debug)
+  # Actualizada la ruta al archivo .csproj que quieres empaquetar
+  PROJECT_TO_PACK_PATH: src/DevCracks.Fractalize.Infrastructure/DevCracks.Fractalize.Infrastructure.csproj
+  # Si tienes una solución, es bueno restaurar/construir a nivel de solución
+  SOLUTION_PATH: src/DevCracks.Fractalize.Framework.sln
+
+jobs:
+  build-and-publish:
+    runs-on: ubuntu-latest # O windows-latest si lo prefieres
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+
+    - name: Setup .NET SDK
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '8.0.x' # O la versión de .NET que uses (ej: 6.0.x, 7.0.x)
+
+    - name: Get Project Version (from .csproj)
+      id: get_version
+      run: |
+        # Extrae la versión del .csproj usando grep/sed.
+        # Asume que PackageVersion o Version está en el .csproj.
+        # Este es un ejemplo robusto para extraer la versión.
+        # Busca <Version> o <PackageVersion> y extrae su contenido.
+        PROJECT_VERSION=$(grep -oP '<Version>\K[^<]*' ${{ env.PROJECT_TO_PACK_PATH }} | head -1)
+        if [ -z "$PROJECT_VERSION" ]; then
+            PROJECT_VERSION=$(grep -oP '<PackageVersion>\K[^<]*' ${{ env.PROJECT_TO_PACK_PATH }} | head -1)
+        fi
+        if [ -z "$PROJECT_VERSION" ]; then
+            echo "::error::Could not find <Version> or <PackageVersion> in the .csproj file."
+            exit 1
+        fi
+        echo "Project version found: $PROJECT_VERSION"
+        echo "::set-output name=version::$PROJECT_VERSION"
+      shell: bash
+
+    - name: Restore Dependencies (Solution Level)
+      # Restaurar a nivel de solución asegura que todas las dependencias de todos los proyectos se resuelvan
+      run: dotnet restore ${{ env.SOLUTION_PATH }}
+
+    - name: Build Solution
+      # Construir a nivel de solución para asegurar que todos los proyectos compilen correctamente
+      run: dotnet build ${{ env.SOLUTION_PATH }} --configuration ${{ env.BUILD_CONFIGURATION }} --no-restore
+
+    - name: Pack NuGet Package
+      # Genera el .nupkg del proyecto específico en la carpeta nupkgs
+      # Usamos --no-build porque ya construimos la solución completa.
+      run: dotnet pack ${{ env.PROJECT_TO_PACK_PATH }} --configuration ${{ env.BUILD_CONFIGURATION }} --no-build --output nupkgs /p:Version=${{ steps.get_version.outputs.version }}
+
+    - name: Upload NuGet Package (Artifact for Review)
+      # Esto sube el .nupkg como un artefacto de GitHub Actions para que puedas descargarlo y revisarlo.
+      uses: actions/upload-artifact@v4
+      with:
+        name: nuget-package
+        path: nupkgs/*.nupkg # Asegúrate de que esta ruta coincida con la salida de dotnet pack
+
+    - name: Publish NuGet Package to nuget.org
+      # Solo publica si el build fue exitoso y estamos en la rama 'main'
+      if: success() && github.ref == 'refs/heads/main'
+      run: dotnet nuget push nupkgs/*.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json
+      # Considera añadir --skip-duplicate si no quieres errores al intentar publicar la misma versión dos veces.

@@ -4,14 +4,24 @@
 		<TargetFramework>net9.0</TargetFramework>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
-		<Authors>FractalTech</Authors>
-		<Company>FractalTech</Company>
-		<PackageId>FractalTech.Fractalize.Infrastructure</PackageId>
+		<Authors>Dev Cracks</Authors>
+		<Company>Dev Cracks</Company>
+		<PackageId>DevCracks.Fractalize.Infrastructure</PackageId>
 		<Version>1.0.0</Version>
-		<Description>Utility library for Fractalize framework</Description>
-		<PackageTags>fractalize;utils;framework</PackageTags>
-		<PackageOutputPath>./nupkg</PackageOutputPath>
+		<Description>
+			Fractalize es un framework .NET moderno. Inspirado en fractales, crea arquitecturas elegantes, claras y robustas.
+			Promueve sistemas escalables y mantenibles mediante componentes modulares y patrones sólidos.
+		</Description>
+		<RepositoryUrl>https://github.com/dev-cracks/dotnet-fractalize-framework</RepositoryUrl>
+		<PackageProjectUrl>https://github.com/dev-cracks/dotnet-fractalize-framework</PackageProjectUrl>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<PackageTags>dotnet;framework;fractal;architecture;library</PackageTags>
+		<PackageReleaseNotes>Initial release of DevCracks.Fractalize.</PackageReleaseNotes>
+		<IncludeSymbols>true</IncludeSymbols>
+		<SymbolPackageFormat>snupkg</SymbolPackageFormat>
+		<PublishRepositoryUrl>true</PublishRepositoryUrl>
+		<EmbedUntrackedSources>true</EmbedUntrackedSources>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 	</PropertyGroup>
-
+	
 </Project>
