@@ -51,8 +51,8 @@ jobs:
       if: success() && github.ref == 'refs/heads/main'
       # Añadimos --skip-duplicate para evitar errores si por alguna razón la misma versión ya existe
       # (aunque con el run_number esto es poco probable para nuevas versiones).
-      run: dotnet nuget push nupkgs/*.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source ${{ env.NUGET_PUSH_URL }} --skip-duplicate
+      run: dotnet nuget push nupkgs/*.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source ${{ secrets.NUGET_PUSH_URL }} --skip-duplicate
 
     - name: Publish NuGet Package to MyGet # CAMBIADO EL NOMBRE DEL PASO
       if: success() && github.ref == 'refs/heads/main'
-      run: dotnet nuget push nupkgs/*.nupkg --api-key ${{ secrets.MYGET_API_KEY }} --source ${{ env.MYGET_PUSH_URL }} --skip-duplicate
+      run: dotnet nuget push nupkgs/*.nupkg --api-key ${{ secrets.MYGET_API_KEY }} --source ${{ secrets.MYGET_PUSH_URL }} --skip-duplicate
