@@ -15,6 +15,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Pipelines", "Pipelines", "{
 		..\.github\workflows\publish-nuget.yml = ..\.github\workflows\publish-nuget.yml
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DevCracks.Fractalize.Domain", "DevCracks.Fractalize.Domain\DevCracks.Fractalize.Domain.csproj", "{0BA98AAE-F785-A6A8-043B-E59948F8925D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -25,6 +27,10 @@ Global
 		{BC9250DE-D585-A238-E4C8-BB8715C6B99D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BC9250DE-D585-A238-E4C8-BB8715C6B99D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BC9250DE-D585-A238-E4C8-BB8715C6B99D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0BA98AAE-F785-A6A8-043B-E59948F8925D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0BA98AAE-F785-A6A8-043B-E59948F8925D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0BA98AAE-F785-A6A8-043B-E59948F8925D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0BA98AAE-F785-A6A8-043B-E59948F8925D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
