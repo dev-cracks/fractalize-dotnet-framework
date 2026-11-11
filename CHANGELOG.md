@@ -1,5 +1,16 @@
 # Changelog
 
+## [2.0.0](https://github.com/dev-cracks/fractalize-dotnet-framework/compare/v1.0.1...v2.0.0) (2026-11-11)
+
+
+### ⚠ BREAKING CHANGES
+
+* rename the packages and namespaces to Efc.Fractalize and target .NET 10 ([#8](https://github.com/dev-cracks/fractalize-dotnet-framework/issues/8))
+
+### Refactoring
+
+* rename the packages and namespaces to Efc.Fractalize and target .NET 10 ([#8](https://github.com/dev-cracks/fractalize-dotnet-framework/issues/8)) ([a1a2b9d](https://github.com/dev-cracks/fractalize-dotnet-framework/commit/a1a2b9d231bbc3bf61b76ee702d3022b8ec2ef07))
+
 ## [1.0.1](https://github.com/dev-cracks/fractalize-dotnet-framework/compare/v1.0.0...v1.0.1) (2026-11-11)
 
 
