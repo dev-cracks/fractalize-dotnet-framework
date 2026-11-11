@@ -131,7 +131,7 @@ public static class ConfigurationExtensions
     /// </summary>
     /// <typeparam name="TCommand"></typeparam>
     /// <param name="services"></param>
-    /// <returns></returns>     
+    /// <returns></returns>
     public static IServiceCollection ConfigureCommandHandler<TCommand>(this IServiceCollection services)
         where TCommand : ICommand
     {

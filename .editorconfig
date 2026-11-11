@@ -1,0 +1,60 @@
+# EditorConfig: consistent formatting across editors and IDEs. https://editorconfig.org
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+indent_style = space
+indent_size = 2
+
+[*.{cs,csx}]
+indent_size = 4
+csharp_style_namespace_declarations = file_scoped:error
+csharp_prefer_braces = true:warning
+csharp_style_var_for_built_in_types = true:suggestion
+csharp_style_var_when_type_is_apparent = true:suggestion
+dotnet_sort_system_directives_first = true
+
+# Engineering standards (docs/engineering-standards.md), enforced at build time.
+dotnet_diagnostic.IDE0161.severity = error # file-scoped namespaces
+dotnet_diagnostic.IDE0005.severity = error # unnecessary using directive
+dotnet_diagnostic.IDE0051.severity = error # unused private member
+dotnet_diagnostic.IDE0052.severity = error # unread private member
+dotnet_diagnostic.IDE0059.severity = error # unnecessary assignment
+dotnet_diagnostic.IDE0060.severity = error # unused parameter
+dotnet_diagnostic.CS0168.severity = error  # variable declared but never used
+dotnet_diagnostic.CS0219.severity = error  # variable assigned but never used
+
+[*.{csproj,props,targets,xml}]
+indent_size = 2
+
+[*.sln]
+indent_style = tab
+
+[*.{py,java,kt,kts,ps1,psm1,psd1}]
+indent_size = 4
+
+[*.py]
+max_line_length = 100
+
+[{*.go,go.mod,go.sum}]
+indent_style = tab
+indent_size = 4
+
+[*.{ts,tsx,js,jsx,mjs,cjs,json,jsonc,yml,yaml,html,css,scss}]
+indent_size = 2
+
+[*.{cmd,bat}]
+end_of_line = crlf
+
+[*.md]
+# Two trailing spaces are a hard line break in Markdown.
+trim_trailing_whitespace = false
+
+[{Makefile,*.mk}]
+indent_style = tab
+
+[LICENSE]
+indent_size = unset

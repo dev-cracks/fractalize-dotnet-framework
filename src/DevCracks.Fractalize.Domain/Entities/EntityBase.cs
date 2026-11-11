@@ -1,4 +1,4 @@
-﻿using DevCracks.Fractalize.Domain.Events;
+using DevCracks.Fractalize.Domain.Events;
 
 namespace DevCracks.Fractalize.Domain.Entities;
 

@@ -102,7 +102,7 @@ public static class ConfigurationExtensions
     /// <typeparam name="TQuery"></typeparam>
     /// <typeparam name="TResult"></typeparam>
     /// <param name="services"></param>
-    /// <returns></returns> 
+    /// <returns></returns>
     public static IServiceCollection ConfigureQueryHandler<TQuery, TResult>(this IServiceCollection services)
         where TQuery : IQuery<TResult>
     {
