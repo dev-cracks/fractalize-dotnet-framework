@@ -59,7 +59,7 @@ Every configurable value lives in a strongly typed options class, never read wit
 `IConfiguration["..."]` inside business code.
 
 ```csharp
-namespace Fractalize.Shipments.Infrastructure;
+namespace Efc.Fractalize.Shipments.Infrastructure;
 
 public sealed class ShipmentRepositoryOptions
 {
@@ -97,7 +97,7 @@ Program.cs ──▶ ShipmentApiConfigurator.AddShipmentApi()
 ```
 
 ```csharp
-namespace Fractalize.Shipments.Infrastructure;
+namespace Efc.Fractalize.Shipments.Infrastructure;
 
 public static class ShipmentRepositoryConfigurator
 {
@@ -125,7 +125,7 @@ public static class ShipmentRepositoryConfigurator
 ```
 
 ```csharp
-namespace Fractalize.Shipments.Application;
+namespace Efc.Fractalize.Shipments.Application;
 
 public static class ShipmentServiceConfigurator
 {

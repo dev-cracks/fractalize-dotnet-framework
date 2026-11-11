@@ -1,5 +1,5 @@
 {
-    "dotnet-test-explorer.testProjectPath": "src/Dev.Cracks.Fractalize.Infrastructure.Test/Dev.Cracks.Fractalize.Infrastructure.Test.csproj",
+    "dotnet-test-explorer.testProjectPath": "src/Tests/Efc.Fractalize.Infrastructure.Tests/Efc.Fractalize.Infrastructure.Tests.csproj",
     "cSpell.words": [
         "Fractalize"
     ]

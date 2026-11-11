@@ -14,22 +14,22 @@ documentation, bug reports, tests or new features.
 
 | Toolchain | Version |
 | --- | --- |
-| [.NET SDK](https://dotnet.microsoft.com/download) | 8.0 or later (CI builds with the 10.0 SDK) |
-| .NET runtime | 8.0, to run the tests (the libraries target `net8.0`) |
+| [.NET SDK](https://dotnet.microsoft.com/download) | 10.0 or later |
+| .NET runtime | 10.0, to run the tests (the libraries target `net10.0`) |
 
-The solution lives in [`src/DevCracks.Fractalize.Framework.sln`](src/DevCracks.Fractalize.Framework.sln):
-the libraries are `DevCracks.Fractalize.Domain`, `DevCracks.Fractalize.Application` and
-`DevCracks.Fractalize.Infrastructure`, and their tests are under `src/Tests/`.
+The solution lives in [`src/Efc.Fractalize.Framework.sln`](src/Efc.Fractalize.Framework.sln):
+the libraries are `Efc.Fractalize.Domain`, `Efc.Fractalize.Application` and
+`Efc.Fractalize.Infrastructure`, and their tests are under `src/Tests/`.
 
 ```bash
 # Restore, build with warnings as errors and run the tests before opening a pull request.
-dotnet restore src/DevCracks.Fractalize.Framework.sln
-dotnet build src/DevCracks.Fractalize.Framework.sln --no-restore -c Release -warnaserror
-dotnet test src/DevCracks.Fractalize.Framework.sln --no-build -c Release --collect "XPlat Code Coverage" --settings coverlet.runsettings --results-directory TestResults
+dotnet restore src/Efc.Fractalize.Framework.sln
+dotnet build src/Efc.Fractalize.Framework.sln --no-restore -c Release -warnaserror
+dotnet test src/Efc.Fractalize.Framework.sln --no-build -c Release --collect "XPlat Code Coverage" --settings coverlet.runsettings --results-directory TestResults
 python3 tools/check_coverage.py TestResults --min 80
 
-# With only a newer runtime installed (no 8.0 runtime), let the tests roll forward to it:
-DOTNET_ROLL_FORWARD=Major dotnet test src/DevCracks.Fractalize.Framework.sln --no-build -c Release
+# With only a newer runtime installed (no 10.0 runtime), let the tests roll forward to it:
+DOTNET_ROLL_FORWARD=Major dotnet test src/Efc.Fractalize.Framework.sln --no-build -c Release
 
 # Markdown checks (Node.js required):
 npx markdownlint-cli2 && python3 tools/check_links.py
