@@ -4,8 +4,8 @@
 [![CodeQL](https://github.com/dev-cracks/fractalize-dotnet-framework/actions/workflows/codeql.yml/badge.svg)](https://github.com/dev-cracks/fractalize-dotnet-framework/actions/workflows/codeql.yml)
 [![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/dev-cracks/fractalize-dotnet-framework/badge)](https://scorecard.dev/viewer/?uri=github.com/dev-cracks/fractalize-dotnet-framework)
 [![Latest release](https://img.shields.io/github/v/release/dev-cracks/fractalize-dotnet-framework?sort=semver)](https://github.com/dev-cracks/fractalize-dotnet-framework/releases)
-[![NuGet](https://img.shields.io/nuget/vpre/DevCracks.Fractalize.Infrastructure.svg)](https://www.nuget.org/packages/DevCracks.Fractalize.Infrastructure)
-[![NuGet downloads](https://img.shields.io/nuget/dt/DevCracks.Fractalize.Infrastructure.svg)](https://www.nuget.org/packages/DevCracks.Fractalize.Infrastructure)
+[![NuGet](https://img.shields.io/nuget/vpre/Efc.Fractalize.Infrastructure.svg)](https://www.nuget.org/packages/Efc.Fractalize.Infrastructure)
+[![NuGet downloads](https://img.shields.io/nuget/dt/Efc.Fractalize.Infrastructure.svg)](https://www.nuget.org/packages/Efc.Fractalize.Infrastructure)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Conventional Commits](https://img.shields.io/badge/Conventional%20Commits-1.0.0-fe5196.svg?logo=conventionalcommits&logoColor=white)](https://www.conventionalcommits.org/en/v1.0.0/)
 
@@ -17,23 +17,23 @@
 
 | Package | Contents |
 | --- | --- |
-| `DevCracks.Fractalize.Domain` | Building blocks with no dependencies: `EntityBase`, `AggregateRootBase`, `IDomainEvent`, `EventBase`, and the `ICommand` / `IQuery` contracts with their handlers and dispatchers |
-| `DevCracks.Fractalize.Application` | `CommandDispatcher` and the registration of command dispatchers and handlers (`AddCommandDispatchers`, `AddCommandHandlers`, `AddCqrs`) |
-| `DevCracks.Fractalize.Infrastructure` | `QueryDispatcher`, the registration of query dispatchers and handlers (`AddQueryDispatchers`, `AddQueryHandlers`) and validated configuration sections (`AddConfigurationSection`) |
+| `Efc.Fractalize.Domain` | Building blocks with no dependencies: `EntityBase`, `AggregateRootBase`, `IDomainEvent`, `EventBase`, and the `ICommand` / `IQuery` contracts with their handlers and dispatchers |
+| `Efc.Fractalize.Application` | `CommandDispatcher` and the registration of command dispatchers and handlers (`AddCommandDispatchers`, `AddCommandHandlers`, `AddCqrs`) |
+| `Efc.Fractalize.Infrastructure` | `QueryDispatcher`, the registration of query dispatchers and handlers (`AddQueryDispatchers`, `AddQueryHandlers`) and validated configuration sections (`AddConfigurationSection`) |
 
-The libraries target `net8.0` and are published to [NuGet](https://www.nuget.org/packages/DevCracks.Fractalize.Infrastructure).
+The libraries target `net10.0` and are published to [NuGet](https://www.nuget.org/packages/Efc.Fractalize.Infrastructure).
 
 ## 🚀 Getting started
 
 ```bash
-dotnet add package DevCracks.Fractalize.Infrastructure
+dotnet add package Efc.Fractalize.Infrastructure
 ```
 
 Define a query and its handler, register them and dispatch the query:
 
 ```csharp
-using DevCracks.Fractalize.Domain.Queries;
-using DevCracks.Fractalize.Infrastructure.Queries;
+using Efc.Fractalize.Domain.Queries;
+using Efc.Fractalize.Infrastructure.Queries;
 
 public sealed record GetGreeting(string Name) : IQuery<string>;
 
@@ -53,7 +53,7 @@ var greeting = await provider
 ```
 
 Commands work the same way with `ICommand`, `ICommandHandler<TCommand>`, `TryAddCommandDispatcher<TCommand>()`
-and `AddCommandHandlers()` from `DevCracks.Fractalize.Application.Commands`.
+and `AddCommandHandlers()` from `Efc.Fractalize.Application.Commands`.
 
 ## 🛠️ Building from source
 
@@ -61,8 +61,8 @@ Prerequisites, commands and the checks every pull request must pass are in
 [`CONTRIBUTING.md`](CONTRIBUTING.md#development-setup). In short:
 
 ```bash
-dotnet build src/DevCracks.Fractalize.Framework.sln -c Release -warnaserror
-dotnet test src/DevCracks.Fractalize.Framework.sln -c Release
+dotnet build src/Efc.Fractalize.Framework.sln -c Release -warnaserror
+dotnet test src/Efc.Fractalize.Framework.sln -c Release
 ```
 
 ## 🛡️ Standards

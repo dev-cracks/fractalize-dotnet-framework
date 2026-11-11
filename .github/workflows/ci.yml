@@ -78,18 +78,17 @@ jobs:
     env:
       DOTNET_CLI_TELEMETRY_OPTOUT: "1"
       DOTNET_NOLOGO: "1"
-      SOLUTION: src/DevCracks.Fractalize.Framework.sln
+      SOLUTION: src/Efc.Fractalize.Framework.sln
       # Minimum line coverage. Target: 80 (docs/engineering-standards.md); only ever raise it.
       COVERAGE_MIN: "80"
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
-      # The libraries target net8.0: the 8.0 runtime runs the tests, the latest SDK builds them.
+      # The libraries target net10.0.
       - uses: actions/setup-dotnet@0f4a354dd5547a28c70b7853dbd95d5b67886e73 # v6.1.0
         with:
           dotnet-version: |
-            8.0.x
             10.0.x
       - run: dotnet restore "$SOLUTION"
       - run: dotnet build "$SOLUTION" --no-restore -c Release -warnaserror

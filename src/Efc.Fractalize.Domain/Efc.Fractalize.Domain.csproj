@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>Efc.Fractalize.Domain</RootNamespace>
+    <Authors>Daniel F Yepes Ortega</Authors>
+    <Company>Dev Cracks</Company>
+    <PackageId>Efc.Fractalize.Domain</PackageId>
+    <Version>1.0.0</Version>
+    <Description>Building blocks with no dependencies: entities, aggregate roots, domain events and the command and query contracts.</Description>
+    <RepositoryUrl>https://github.com/dev-cracks/fractalize-dotnet-framework</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageProjectUrl>https://github.com/dev-cracks/fractalize-dotnet-framework</PackageProjectUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageTags>dotnet;framework;fractal;architecture;library</PackageTags>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+  </PropertyGroup>
+</Project>
