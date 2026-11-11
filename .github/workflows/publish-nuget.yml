@@ -1,27 +1,40 @@
 name: Publish NuGet Package
 
+# Versioning (ADR 0088 n.º 3): pushes to main publish prerelease packages; stable packages are
+# published only from a version tag (vX.Y.Z). Tags created by release-please with GITHUB_TOKEN do
+# not trigger workflows, so a stable release is published by running this workflow manually
+# ("Run workflow") on the tag.
 on:
   push:
     branches:
       - main
+    tags:
+      - 'v*.*.*'
     paths:
       - 'src/**/*.csproj'
       - 'src/**/*.cs'
+      - 'Directory.Build.props'
   workflow_dispatch: {}
 
 permissions:
   contents: read
 
+concurrency:
+  group: publish-nuget-${{ github.ref }}
+  cancel-in-progress: false
+
 env:
   BUILD_CONFIGURATION: Release
   SOLUTION_PATH: src/Efc.Fractalize.Framework.sln
-  MAJOR_MINOR_VERSION: 1.0
   DOTNET_CLI_TELEMETRY_OPTOUT: "1"
   DOTNET_NOLOGO: "1"
 
 jobs:
   build-and-publish:
     runs-on: ubuntu-latest
+    # Protect this environment (required reviewer, deployment refs main and v*) in the repository
+    # settings; the feed keys should live as secrets of this environment.
+    environment: nuget
 
     steps:
     - name: Checkout Repository
@@ -34,17 +47,42 @@ jobs:
       with:
         dotnet-version: '10.0.x'
 
+    # Stable version from a vX.Y.Z tag; otherwise the next patch of the release-please manifest
+    # as a prerelease (1.2.3 -> 1.2.4-preview.<run>), so previews sort after the last release.
+    - name: Compute package version
+      id: version
+      run: |
+        if [[ "$GITHUB_REF_TYPE" == "tag" && "$GITHUB_REF_NAME" =~ ^v([0-9]+\.[0-9]+\.[0-9]+)$ ]]; then
+          version="${BASH_REMATCH[1]}"
+        else
+          base="$(jq -r '."."' .release-please-manifest.json)"
+          if [[ ! "$base" =~ ^([0-9]+)\.([0-9]+)\.([0-9]+)$ ]]; then
+            echo "::error::Unexpected version '$base' in .release-please-manifest.json"
+            exit 1
+          fi
+          version="${BASH_REMATCH[1]}.${BASH_REMATCH[2]}.$((BASH_REMATCH[3] + 1))-preview.${GITHUB_RUN_NUMBER}"
+        fi
+        echo "Package version: $version"
+        echo "value=$version" >> "$GITHUB_OUTPUT"
+
     - name: Restore Dependencies (Solution Level)
       run: dotnet restore "$SOLUTION_PATH"
 
+    # The version goes to build and pack, so the assemblies and the packages carry the same one.
     - name: Build Solution
-      run: dotnet build "$SOLUTION_PATH" --configuration "$BUILD_CONFIGURATION" --no-restore -warnaserror
+      env:
+        PACKAGE_VERSION: ${{ steps.version.outputs.value }}
+      run: >-
+        dotnet build "$SOLUTION_PATH" --configuration "$BUILD_CONFIGURATION" --no-restore -warnaserror
+        "-p:Version=$PACKAGE_VERSION" -p:ContinuousIntegrationBuild=true
 
     # Packs every packable project (Efc.Fractalize.Domain, .Application and .Infrastructure).
     - name: Pack NuGet Packages
+      env:
+        PACKAGE_VERSION: ${{ steps.version.outputs.value }}
       run: >-
         dotnet pack "$SOLUTION_PATH" --configuration "$BUILD_CONFIGURATION" --no-build --output nupkgs
-        "/p:Version=${MAJOR_MINOR_VERSION}.${GITHUB_RUN_NUMBER}"
+        "-p:Version=$PACKAGE_VERSION" -p:ContinuousIntegrationBuild=true
 
     - name: Upload NuGet Packages (Artifact for Review)
       uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
@@ -52,10 +90,10 @@ jobs:
         name: nuget-package
         path: nupkgs/*.nupkg
 
-    # Each push step is skipped while its secrets are not configured, so main stays green until the
-    # Efc.Fractalize prefix is reserved on nuget.org and the API keys exist.
+    # Nothing is pushed until the repository variable NUGET_PUBLISH_ENABLED is "true" (set it once the
+    # Efc.Fractalize prefix is reserved on nuget.org), and each feed is skipped while its secrets are missing.
     - name: Publish NuGet Packages to nuget.org
-      if: success() && github.ref == 'refs/heads/main'
+      if: success() && vars.NUGET_PUBLISH_ENABLED == 'true' && (github.ref == 'refs/heads/main' || github.ref_type == 'tag')
       env:
         NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
         NUGET_PUSH_URL: ${{ secrets.NUGET_PUSH_URL }}
@@ -67,7 +105,7 @@ jobs:
         dotnet nuget push "nupkgs/*.nupkg" --api-key "$NUGET_API_KEY" --source "$NUGET_PUSH_URL" --skip-duplicate
 
     - name: Publish NuGet Packages to MyGet
-      if: success() && github.ref == 'refs/heads/main'
+      if: success() && vars.NUGET_PUBLISH_ENABLED == 'true' && (github.ref == 'refs/heads/main' || github.ref_type == 'tag')
       env:
         MYGET_API_KEY: ${{ secrets.MYGET_API_KEY }}
         MY_GET_PUSH_URL: ${{ secrets.MY_GET_PUSH_URL }}

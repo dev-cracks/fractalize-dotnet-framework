@@ -5,7 +5,6 @@
     <Authors>Daniel F Yepes Ortega</Authors>
     <Company>Dev Cracks</Company>
     <PackageId>Efc.Fractalize.Domain</PackageId>
-    <Version>1.0.0</Version>
     <Description>Building blocks with no dependencies: entities, aggregate roots, domain events and the command and query contracts.</Description>
     <RepositoryUrl>https://github.com/dev-cracks/fractalize-dotnet-framework</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
@@ -16,6 +15,5 @@
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
 </Project>
