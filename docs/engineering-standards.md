@@ -1,7 +1,7 @@
 # Engineering standards
 
 These rules apply to every change in this repository. Most of them are enforced by the build
-([`.editorconfig`](../.editorconfig), [`Directory.Build.props`](../Directory.Build.props)) and by CI; the
+(`.editorconfig`, `Directory.Build.props` in .NET repositories) and by CI; the
 rest are checked in code review.
 
 ## 1. Code style
@@ -19,8 +19,8 @@ Run `dotnet format` before committing to fix most of them automatically.
 ## 2. Tests and coverage
 
 - **Minimum 80 % line coverage** for the whole solution, measured in CI with coverlet
-  ([`coverlet.runsettings`](../coverlet.runsettings)) and checked by
-  [`tools/check_coverage.py`](../tools/check_coverage.py).
+  (`coverlet.runsettings`) and checked by
+  `tools/check_coverage.py`.
 - **Priority:** the domain and application core first, then sensitive code (authentication,
   authorization, cryptography, money, personal data, tenancy isolation, validation of external input).
   Those areas aim for 100 % and must cover the failure paths, not only the happy path.
