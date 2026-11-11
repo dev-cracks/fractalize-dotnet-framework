@@ -1,5 +1,25 @@
 # Changelog
 
+## [1.0.1](https://github.com/dev-cracks/fractalize-dotnet-framework/compare/v1.0.0...v1.0.1) (2026-11-11)
+
+
+### Documentation
+
+* make the engineering standards portable across repositories ([f45c26b](https://github.com/dev-cracks/fractalize-dotnet-framework/commit/f45c26b219e0b8eb65dd350fa6fbf8e2582b1cd8))
+
+
+### Tests
+
+* compare entities through their base type ([f3d29cd](https://github.com/dev-cracks/fractalize-dotnet-framework/commit/f3d29cde0ddd0e757578d0faa5ca1292bf96d0f5))
+
+
+### Build System
+
+* Bump the nuget group with 9 updates ([5820aeb](https://github.com/dev-cracks/fractalize-dotnet-framework/commit/5820aebe18131b9f92c151b431a7a463126ec68b))
+* Bump the nuget group with 9 updates ([#5](https://github.com/dev-cracks/fractalize-dotnet-framework/issues/5)) ([5667e8b](https://github.com/dev-cracks/fractalize-dotnet-framework/commit/5667e8b5015aca0ab461cc6b86a46dc980987f5b))
+
+## Changelog
+
 All notable changes to this project are documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to
