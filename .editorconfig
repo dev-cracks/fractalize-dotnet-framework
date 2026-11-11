@@ -31,10 +31,10 @@ dotnet_diagnostic.CS0219.severity = error  # variable assigned but never used
 indent_size = 2
 
 [*.sln]
-# Visual Studio writes solution files with a BOM and CRLF line endings.
+# Visual Studio writes solution files with CRLF line endings, with or without a BOM.
 indent_style = tab
 end_of_line = crlf
-charset = utf-8-bom
+charset = unset
 
 [*.{py,java,kt,kts,ps1,psm1,psd1}]
 indent_size = 4
