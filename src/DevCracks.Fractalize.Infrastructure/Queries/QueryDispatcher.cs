@@ -9,7 +9,7 @@ namespace DevCracks.Fractalize.Infrastructure.Queries;
 /// <remarks>
 /// Initializes a new instance of the QueryDispatcher class.
 /// </remarks>
-/// <param name="serviceProvider">The service provider used to resolve query handlers.</param>
+/// <param name="provider">The service provider used to resolve query handlers.</param>
 public class QueryDispatcher<TQuery, TResult>(IServiceProvider provider) : IQueryDispatcher<TQuery, TResult>
     where TQuery : IQuery<TResult>
 {

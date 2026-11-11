@@ -1,0 +1,13 @@
+<Project>
+  <!-- Shared build settings. See docs/engineering-standards.md. -->
+  <PropertyGroup>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <AnalysisLevel>latest</AnalysisLevel>
+    <!-- Apply the .editorconfig code-style rules (file-scoped namespaces, unused code) at build time. -->
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+    <!-- Required by IDE0005 (unnecessary usings) at build time; missing XML docs are not an error. -->
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>$(NoWarn);CS1591</NoWarn>
+  </PropertyGroup>
+</Project>
