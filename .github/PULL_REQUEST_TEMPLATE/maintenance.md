@@ -16,8 +16,7 @@
 ### Impact
 
 <!-- Behaviour must not change. Note risks, new required checks or settings to update
-     (for example, re-running setup-repo.ps1 from danielfyo/public-repo-template for new
-     required checks or allowed actions). -->
+     (for example, re-running scripts/setup-repo.ps1 for new required checks or allowed actions). -->
 
 ### Checklist
 

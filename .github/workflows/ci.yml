@@ -2,8 +2,7 @@ name: CI
 
 # Quality gates for every pull request and for main: repository-wide checks inherited from
 # danielfyo/public-repo-template plus the .NET build and test job of this project.
-# The template's "powershell" job is omitted because the repository has no PowerShell scripts.
-# Every job id must be a required check of the "Protect main" ruleset (setup-repo.ps1).
+# Every job id must be a required check of the "Protect main" ruleset (scripts/setup-repo.ps1).
 on:
   push:
     branches: [main]
@@ -46,6 +45,30 @@ jobs:
         with:
           persist-credentials: false
       - uses: raven-actions/actionlint@3d39aea434753780c3b3d4a1a31c854b4dbf49d7 # v2.2.0
+
+  powershell:
+    name: powershell
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Parse and lint PowerShell scripts
+        shell: pwsh
+        run: |
+          $files = @(Get-ChildItem -Recurse -Include *.ps1, *.psm1 -File | Where-Object { $_.FullName -notmatch '[\\/]node_modules[\\/]' })
+          if ($files.Count -eq 0) { Write-Host 'No PowerShell files.'; exit 0 }
+          $failed = $false
+          foreach ($file in $files) {
+            $errors = $null
+            [System.Management.Automation.Language.Parser]::ParseFile($file.FullName, [ref]$null, [ref]$errors) | Out-Null
+            foreach ($e in $errors) { Write-Host "::error file=$($file.FullName),line=$($e.Extent.StartLineNumber)::$($e.Message)"; $failed = $true }
+          }
+          Set-PSRepository PSGallery -InstallationPolicy Trusted
+          Install-Module PSScriptAnalyzer -RequiredVersion 1.24.0 -Scope CurrentUser -Force
+          $issues = @(Invoke-ScriptAnalyzer -Path . -Recurse -Severity Warning, Error -ExcludeRule PSAvoidUsingWriteHost)
+          foreach ($i in $issues) { Write-Host "::error file=$($i.ScriptPath),line=$($i.Line)::$($i.RuleName): $($i.Message)" }
+          if ($failed -or $issues.Count -gt 0) { exit 1 }
 
   # --- Project jobs ----------------------------------------------------------
 

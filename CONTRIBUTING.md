@@ -44,6 +44,7 @@ Repository-wide checks run in CI on every pull request:
 | `markdown` | Markdown style ([`.markdownlint.jsonc`](.markdownlint.jsonc)) and relative links ([`tools/check_links.py`](tools/check_links.py)) |
 | `editorconfig` | Encoding, line endings, indentation and trailing whitespace ([`.editorconfig`](.editorconfig)) |
 | `actionlint` | GitHub Actions workflow syntax and shell scripts |
+| `powershell` | PowerShell syntax and PSScriptAnalyzer rules |
 | `dotnet` | Restore, build with `-warnaserror` (code-style rules included), tests and minimum line coverage ([`tools/check_coverage.py`](tools/check_coverage.py)) |
 | `conventional-commits` | Pull request title format |
 | CodeQL (`actions`, `csharp`), dependency review | Security analysis and vulnerable dependencies |
@@ -98,8 +99,7 @@ Nobody pushes to `main` directly, maintainers included: every change arrives thr
    - A code owner has approved the latest changes and every review conversation is resolved.
    - **Commits are signed** ([how to sign commits](https://docs.github.com/en/authentication/managing-commit-signature-verification/signing-commits)).
      Maintainers can sign an existing branch without squashing it with
-     [`scripts/fix-repo.ps1`](https://github.com/danielfyo/public-repo-template/blob/main/scripts/fix-repo.ps1)
-     from the repository template.
+     [`scripts/fix-repo.ps1`](scripts/fix-repo.ps1).
    - Pull requests are merged with a merge commit or squashed (no rebase merges); the branch is deleted
      after merging.
 
