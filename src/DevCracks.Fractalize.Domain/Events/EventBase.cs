@@ -1,4 +1,4 @@
-﻿namespace DevCracks.Fractalize.Domain.Events;
+namespace DevCracks.Fractalize.Domain.Events;
 
 /// <summary>
 /// Interface for domain events.
