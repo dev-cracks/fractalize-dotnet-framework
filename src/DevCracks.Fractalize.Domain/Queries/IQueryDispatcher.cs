@@ -11,8 +11,6 @@ public interface IQueryDispatcher<TQuery, TResult> where TQuery : IQuery<TResult
     /// <summary>
     /// Dispatches a query to the appropriate query handler for processing.
     /// </summary>
-    /// <typeparam name="TQuery">The type of the query to dispatch.</typeparam>
-    /// <typeparam name="TResult">The type of the result returned by the query handler.</typeparam>
     /// <param name="query">The query to dispatch.</param>
     /// <param name="cancellationToken">A cancellation token to observe while waiting for the task to complete.</param>
     /// <returns>A task that represents the asynchronous operation, containing the result of the query.</returns>

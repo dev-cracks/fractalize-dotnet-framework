@@ -8,8 +8,8 @@ public class EntityBaseTest
     [Fact]
     public void Equals_WithSameId_ReturnsTrue()
     {
-        var first = new TestAggregate(7);
-        var second = new TestAggregate(7);
+        EntityBase<int> first = new TestAggregate(7);
+        EntityBase<int> second = new TestAggregate(7);
 
         Assert.True(first.Equals(second));
         Assert.True(first.Equals((object)second));
@@ -19,11 +19,11 @@ public class EntityBaseTest
     [Fact]
     public void Equals_WithDifferentIdOrNull_ReturnsFalse()
     {
-        var entity = new TestAggregate(7);
+        EntityBase<int> entity = new TestAggregate(7);
 
         Assert.False(entity.Equals(new TestAggregate(8)));
         Assert.False(entity.Equals(null));
-        Assert.False(entity.Equals("not an entity"));
+        Assert.False(entity.Equals((object?)null));
     }
 
     [Fact]

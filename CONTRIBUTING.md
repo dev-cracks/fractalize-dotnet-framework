@@ -14,13 +14,25 @@ documentation, bug reports, tests or new features.
 
 | Toolchain | Version |
 | --- | --- |
-| .NET SDK | 8.0 |
-| Python (coverage check) | 3.10+ |
+| [.NET SDK](https://dotnet.microsoft.com/download) | 8.0 or later (CI builds with the 10.0 SDK) |
+| .NET runtime | 8.0, to run the tests (the libraries target `net8.0`) |
+
+The solution lives in [`src/DevCracks.Fractalize.Framework.sln`](src/DevCracks.Fractalize.Framework.sln):
+the libraries are `DevCracks.Fractalize.Domain`, `DevCracks.Fractalize.Application` and
+`DevCracks.Fractalize.Infrastructure`, and their tests are under `src/Tests/`.
 
 ```bash
-dotnet build src/DevCracks.Fractalize.Framework.sln -c Release
-dotnet test src/DevCracks.Fractalize.Framework.sln -c Release --collect "XPlat Code Coverage" --settings coverlet.runsettings --results-directory TestResults
+# Restore, build with warnings as errors and run the tests before opening a pull request.
+dotnet restore src/DevCracks.Fractalize.Framework.sln
+dotnet build src/DevCracks.Fractalize.Framework.sln --no-restore -c Release -warnaserror
+dotnet test src/DevCracks.Fractalize.Framework.sln --no-build -c Release --collect "XPlat Code Coverage" --settings coverlet.runsettings --results-directory TestResults
 python3 tools/check_coverage.py TestResults --min 80
+
+# With only a newer runtime installed (no 8.0 runtime), let the tests roll forward to it:
+DOTNET_ROLL_FORWARD=Major dotnet test src/DevCracks.Fractalize.Framework.sln --no-build -c Release
+
+# Markdown checks (Node.js required):
+npx markdownlint-cli2 && python3 tools/check_links.py
 ```
 
 Coding, testing, configuration and design rules: [`docs/engineering-standards.md`](docs/engineering-standards.md).
@@ -33,9 +45,9 @@ Repository-wide checks run in CI on every pull request:
 | `editorconfig` | Encoding, line endings, indentation and trailing whitespace ([`.editorconfig`](.editorconfig)) |
 | `actionlint` | GitHub Actions workflow syntax and shell scripts |
 | `powershell` | PowerShell syntax and PSScriptAnalyzer rules |
-| `dotnet` | Build with the code-style rules, tests and minimum line coverage ([`tools/check_coverage.py`](tools/check_coverage.py)) |
+| `dotnet` | Restore, build with `-warnaserror` (code-style rules included), tests and minimum line coverage ([`tools/check_coverage.py`](tools/check_coverage.py)) |
 | `conventional-commits` | Pull request title format |
-| CodeQL, dependency review | Security analysis and vulnerable dependencies |
+| CodeQL (`actions`, `csharp`), dependency review | Security analysis and vulnerable dependencies |
 
 ## Commit messages and pull request titles
 
@@ -96,6 +108,9 @@ Nobody pushes to `main` directly, maintainers included: every change arrives thr
 [release-please](https://github.com/googleapis/release-please) keeps a release pull request open with the
 next [Semantic Versioning](https://semver.org/) number and the changelog. Merging it creates the `vX.Y.Z`
 tag and the GitHub Release. Release tags are protected and can never be moved or deleted.
+
+The NuGet packages are published by [`publish-nuget.yml`](.github/workflows/publish-nuget.yml) when library
+code changes on `main` (version `1.0.<run number>`), and can also be published manually from the Actions tab.
 
 ## Code of Conduct
 

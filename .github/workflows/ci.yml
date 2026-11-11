@@ -1,9 +1,8 @@
 name: CI
 
-# Repository-wide quality gates that every project created from the template keeps.
-# Add one job per toolchain (build, lint, test, coverage summary) below the
-# "Project jobs" marker and list its job id in scripts/setup-repo.ps1 so the
-# "Protect main" ruleset requires it.
+# Quality gates for every pull request and for main: repository-wide checks inherited from
+# danielfyo/public-repo-template plus the .NET build and test job of this project.
+# Every job id must be a required check of the "Protect main" ruleset (scripts/setup-repo.ps1).
 on:
   push:
     branches: [main]
@@ -72,20 +71,6 @@ jobs:
           if ($failed -or $issues.Count -gt 0) { exit 1 }
 
   # --- Project jobs ----------------------------------------------------------
-  # Example for a Node.js project (pin every action to a full commit SHA):
-  #
-  # node:
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-  #       with:
-  #         persist-credentials: false
-  #     - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
-  #       with: { node-version: "22", cache: npm }
-  #     - run: npm ci
-  #     - run: npm run lint && npm run typecheck
-  #     - run: npm test -- --coverage
-  #     - run: npm run build
 
   dotnet:
     name: dotnet
@@ -93,19 +78,23 @@ jobs:
     env:
       DOTNET_CLI_TELEMETRY_OPTOUT: "1"
       DOTNET_NOLOGO: "1"
+      SOLUTION: src/DevCracks.Fractalize.Framework.sln
       # Minimum line coverage. Target: 80 (docs/engineering-standards.md); only ever raise it.
       COVERAGE_MIN: "80"
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
+      # The libraries target net8.0: the 8.0 runtime runs the tests, the latest SDK builds them.
       - uses: actions/setup-dotnet@0f4a354dd5547a28c70b7853dbd95d5b67886e73 # v6.1.0
         with:
-          dotnet-version: "8.0.x"
-      - run: dotnet restore src/DevCracks.Fractalize.Framework.sln
-      - run: dotnet build src/DevCracks.Fractalize.Framework.sln --no-restore -c Release
+          dotnet-version: |
+            8.0.x
+            10.0.x
+      - run: dotnet restore "$SOLUTION"
+      - run: dotnet build "$SOLUTION" --no-restore -c Release -warnaserror
       - run: >-
-          dotnet test src/DevCracks.Fractalize.Framework.sln --no-build -c Release
+          dotnet test "$SOLUTION" --no-build -c Release
           --collect "XPlat Code Coverage" --settings coverlet.runsettings
           --logger trx --results-directory TestResults
       - name: Line coverage is at least COVERAGE_MIN

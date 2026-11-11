@@ -1,46 +1,95 @@
-# fractalize-dotnet-framework
+# Fractalize .NET Framework
 
 [![CI](https://github.com/dev-cracks/fractalize-dotnet-framework/actions/workflows/ci.yml/badge.svg)](https://github.com/dev-cracks/fractalize-dotnet-framework/actions/workflows/ci.yml)
 [![CodeQL](https://github.com/dev-cracks/fractalize-dotnet-framework/actions/workflows/codeql.yml/badge.svg)](https://github.com/dev-cracks/fractalize-dotnet-framework/actions/workflows/codeql.yml)
 [![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/dev-cracks/fractalize-dotnet-framework/badge)](https://scorecard.dev/viewer/?uri=github.com/dev-cracks/fractalize-dotnet-framework)
-[![Publish NuGet Package](https://github.com/dev-cracks/fractalize-dotnet-framework/actions/workflows/publish-nuget.yml/badge.svg)](https://github.com/dev-cracks/fractalize-dotnet-framework/actions/workflows/publish-nuget.yml)
+[![Latest release](https://img.shields.io/github/v/release/dev-cracks/fractalize-dotnet-framework?sort=semver)](https://github.com/dev-cracks/fractalize-dotnet-framework/releases)
 [![NuGet](https://img.shields.io/nuget/vpre/DevCracks.Fractalize.Infrastructure.svg)](https://www.nuget.org/packages/DevCracks.Fractalize.Infrastructure)
 [![NuGet downloads](https://img.shields.io/nuget/dt/DevCracks.Fractalize.Infrastructure.svg)](https://www.nuget.org/packages/DevCracks.Fractalize.Infrastructure)
-[![MyGet](https://img.shields.io/myget/dev-cracks/v/DevCracks.Fractalize.Infrastructure.svg)](https://myget.org/gallery/dev-cracks)
-[![.NET 8](https://img.shields.io/badge/.NET-8.0-512BD4.svg?logo=dotnet&logoColor=white)](https://dotnet.microsoft.com/download/dotnet/8.0)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Conventional Commits](https://img.shields.io/badge/Conventional%20Commits-1.0.0-fe5196.svg?logo=conventionalcommits&logoColor=white)](https://www.conventionalcommits.org/en/v1.0.0/)
 
-> **A modern .NET framework inspired by fractals**: simple, repeated structures (entities, aggregates,
-> domain events, commands and queries) that compose into scalable, maintainable systems through modular
-> components and solid patterns.
+> **An opinionated, open source .NET framework for building elegant, robust applications inspired by
+> fractals.** Simple, repeated structures (entities, aggregates, domain events, commands and queries with
+> their dispatchers) keep systems modular, scalable and easy to maintain.
 
 ## 📦 Packages
 
-| Project | Contents |
+| Package | Contents |
 | --- | --- |
-| `DevCracks.Fractalize.Domain` | `EntityBase<TId>`, `AggregateRootBase<TId>`, `EventBase`, command and query contracts |
-| `DevCracks.Fractalize.Application` | Command dispatcher and handler registration (`AddCqrs`) |
-| `DevCracks.Fractalize.Infrastructure` | Query dispatcher and `AddConfigurationSection<T>` (published to NuGet) |
+| `DevCracks.Fractalize.Domain` | Building blocks with no dependencies: `EntityBase`, `AggregateRootBase`, `IDomainEvent`, `EventBase`, and the `ICommand` / `IQuery` contracts with their handlers and dispatchers |
+| `DevCracks.Fractalize.Application` | `CommandDispatcher` and the registration of command dispatchers and handlers (`AddCommandDispatchers`, `AddCommandHandlers`, `AddCqrs`) |
+| `DevCracks.Fractalize.Infrastructure` | `QueryDispatcher`, the registration of query dispatchers and handlers (`AddQueryDispatchers`, `AddQueryHandlers`) and validated configuration sections (`AddConfigurationSection`) |
+
+The libraries target `net8.0` and are published to [NuGet](https://www.nuget.org/packages/DevCracks.Fractalize.Infrastructure).
+
+## 🚀 Getting started
+
+```bash
+dotnet add package DevCracks.Fractalize.Infrastructure
+```
+
+Define a query and its handler, register them and dispatch the query:
 
 ```csharp
-builder.Services
-    .AddCqrs()
-    .AddConfigurationSection<MyOptions>(builder.Configuration, "MySection");
+using DevCracks.Fractalize.Domain.Queries;
+using DevCracks.Fractalize.Infrastructure.Queries;
+
+public sealed record GetGreeting(string Name) : IQuery<string>;
+
+public sealed class GetGreetingHandler : IQueryHandler<GetGreeting, string>
+{
+    public Task<string> HandleAsync(GetGreeting query, CancellationToken cancellationToken = default) =>
+        Task.FromResult($"Hello, {query.Name}!");
+}
+
+// At startup: register the query's dispatcher and scan the handlers.
+services.TryAddQueryDispatcher<GetGreeting, string>().AddQueryHandlers();
+
+// Anywhere: resolve the dispatcher for the query and send it.
+var greeting = await provider
+    .GetRequiredService<IQueryDispatcher<GetGreeting, string>>()
+    .DispatchAsync(new GetGreeting("Fractalize"));
+```
+
+Commands work the same way with `ICommand`, `ICommandHandler<TCommand>`, `TryAddCommandDispatcher<TCommand>()`
+and `AddCommandHandlers()` from `DevCracks.Fractalize.Application.Commands`.
+
+## 🛠️ Building from source
+
+Prerequisites, commands and the checks every pull request must pass are in
+[`CONTRIBUTING.md`](CONTRIBUTING.md#development-setup). In short:
+
+```bash
+dotnet build src/DevCracks.Fractalize.Framework.sln -c Release -warnaserror
+dotnet test src/DevCracks.Fractalize.Framework.sln -c Release
 ```
 
 ## 🛡️ Standards
 
-- [Engineering standards](docs/engineering-standards.md): file-scoped namespaces, no unused code,
-  minimum 80 % line coverage, Options pattern and fluent configurators.
-- Conventional Commits, protected `main`, signed commits and automated releases, as described in
-  [`CONTRIBUTING.md`](CONTRIBUTING.md).
+- **[Engineering standards](docs/engineering-standards.md):** file-scoped namespaces and no unused code
+  (build errors), minimum 80 % line coverage (CI gate), low coupling and high cohesion, Options pattern and
+  fluent `*Configurator` classes.
+- **English only** in code, comments, docs, commits and pull requests.
+- **Conventional Commits** for every commit and pull request title; releases follow
+  [Semantic Versioning](https://semver.org/) and [`CHANGELOG.md`](CHANGELOG.md) is generated by
+  release-please.
+- **Protected `main`:** pull requests only, required checks, code-owner approval, resolved conversations,
+  signed commits, merge commit or squash (no rebase merges), no force pushes or deletion.
+- **Protected release tags:** `v*` tags can't be moved or deleted.
+- **Least-privilege workflows:** read-only token by default, explicit per-job permissions, every action
+  pinned to a full commit SHA, checkouts without persisted credentials.
+- **Supply chain:** CodeQL, dependency review, Dependabot and [OpenSSF Scorecard](https://scorecard.dev/).
+- **Secrets never in Git:** secret scanning with push protection, `.env` files ignored.
+
+These standards come from the [`public-repo-template`](https://github.com/danielfyo/public-repo-template).
 
 ## 🤝 Contributing
 
-Read [`CONTRIBUTING.md`](CONTRIBUTING.md) before opening a pull request, and report vulnerabilities
-privately as described in [`SECURITY.md`](SECURITY.md).
+Read [`CONTRIBUTING.md`](CONTRIBUTING.md) before opening a pull request, follow the
+[Code of Conduct](CODE_OF_CONDUCT.md), and report vulnerabilities privately as described in
+[`SECURITY.md`](SECURITY.md). For questions, see [`SUPPORT.md`](SUPPORT.md).
 
 ## 📄 License
 
-[MIT](LICENSE) © Dev Cracks
+[MIT](LICENSE) © 2025 Dev Cracks
