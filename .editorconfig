@@ -11,11 +11,21 @@ indent_size = 2
 
 [*.{cs,csx}]
 indent_size = 4
-csharp_style_namespace_declarations = file_scoped:warning
+csharp_style_namespace_declarations = file_scoped:error
 csharp_prefer_braces = true:warning
 csharp_style_var_for_built_in_types = true:suggestion
 csharp_style_var_when_type_is_apparent = true:suggestion
 dotnet_sort_system_directives_first = true
+
+# Engineering standards (docs/engineering-standards.md), enforced at build time.
+dotnet_diagnostic.IDE0161.severity = error # file-scoped namespaces
+dotnet_diagnostic.IDE0005.severity = error # unnecessary using directive
+dotnet_diagnostic.IDE0051.severity = error # unused private member
+dotnet_diagnostic.IDE0052.severity = error # unread private member
+dotnet_diagnostic.IDE0059.severity = error # unnecessary assignment
+dotnet_diagnostic.IDE0060.severity = error # unused parameter
+dotnet_diagnostic.CS0168.severity = error  # variable declared but never used
+dotnet_diagnostic.CS0219.severity = error  # variable assigned but never used
 
 [*.{csproj,props,targets,xml}]
 indent_size = 2

@@ -56,6 +56,8 @@ jobs:
       DOTNET_CLI_TELEMETRY_OPTOUT: "1"
       DOTNET_NOLOGO: "1"
       SOLUTION: src/DevCracks.Fractalize.Framework.sln
+      # Minimum line coverage. Target: 80 (docs/engineering-standards.md); only ever raise it.
+      COVERAGE_MIN: "80"
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -68,7 +70,12 @@ jobs:
             10.0.x
       - run: dotnet restore "$SOLUTION"
       - run: dotnet build "$SOLUTION" --no-restore -c Release -warnaserror
-      - run: dotnet test "$SOLUTION" --no-build -c Release --logger "trx" --results-directory TestResults
+      - run: >-
+          dotnet test "$SOLUTION" --no-build -c Release
+          --collect "XPlat Code Coverage" --settings coverlet.runsettings
+          --logger trx --results-directory TestResults
+      - name: Line coverage is at least COVERAGE_MIN
+        run: python3 tools/check_coverage.py TestResults --min "$COVERAGE_MIN"
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         if: always()
         with:

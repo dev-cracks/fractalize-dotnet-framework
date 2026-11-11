@@ -20,7 +20,6 @@ public class CommandDispatcher<TCommand>(IServiceProvider provider) : ICommandDi
     /// The method is generic and works with any command type that implements the ICommand interface.
     /// The cancellationToken parameter allows for cancellation of the operation.
     /// </summary>
-    /// <typeparam name="TCommand"></typeparam>
     /// <param name="command"></param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>

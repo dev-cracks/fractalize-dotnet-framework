@@ -25,7 +25,8 @@ the libraries are `DevCracks.Fractalize.Domain`, `DevCracks.Fractalize.Applicati
 # Restore, build with warnings as errors and run the tests before opening a pull request.
 dotnet restore src/DevCracks.Fractalize.Framework.sln
 dotnet build src/DevCracks.Fractalize.Framework.sln --no-restore -c Release -warnaserror
-dotnet test src/DevCracks.Fractalize.Framework.sln --no-build -c Release
+dotnet test src/DevCracks.Fractalize.Framework.sln --no-build -c Release --collect "XPlat Code Coverage" --settings coverlet.runsettings --results-directory TestResults
+python3 tools/check_coverage.py TestResults --min 80
 
 # With only a newer runtime installed (no 8.0 runtime), let the tests roll forward to it:
 DOTNET_ROLL_FORWARD=Major dotnet test src/DevCracks.Fractalize.Framework.sln --no-build -c Release
@@ -34,6 +35,8 @@ DOTNET_ROLL_FORWARD=Major dotnet test src/DevCracks.Fractalize.Framework.sln --n
 npx markdownlint-cli2 && python3 tools/check_links.py
 ```
 
+Coding, testing, configuration and design rules: [`docs/engineering-standards.md`](docs/engineering-standards.md).
+
 Repository-wide checks run in CI on every pull request:
 
 | Check | What it verifies |
@@ -41,7 +44,7 @@ Repository-wide checks run in CI on every pull request:
 | `markdown` | Markdown style ([`.markdownlint.jsonc`](.markdownlint.jsonc)) and relative links ([`tools/check_links.py`](tools/check_links.py)) |
 | `editorconfig` | Encoding, line endings, indentation and trailing whitespace ([`.editorconfig`](.editorconfig)) |
 | `actionlint` | GitHub Actions workflow syntax and shell scripts |
-| `dotnet` | Restore, build with `-warnaserror` and tests of the solution |
+| `dotnet` | Restore, build with `-warnaserror` (code-style rules included), tests and minimum line coverage ([`tools/check_coverage.py`](tools/check_coverage.py)) |
 | `conventional-commits` | Pull request title format |
 | CodeQL (`actions`, `csharp`), dependency review | Security analysis and vulnerable dependencies |
 

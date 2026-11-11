@@ -23,7 +23,6 @@ public interface ICommandDispatcher<TCommand> where TCommand : ICommand
     /// <summary>
     /// Dispatches a command to the appropriate command handler for processing.
     /// </summary>
-    /// <typeparam name="TCommand">The type of the command to dispatch.</typeparam>
     /// <param name="command">The command to dispatch.</param>
     /// <param name="cancellationToken">A cancellation token to observe while waiting for the task to complete.</param>
     /// <returns>A task that represents the asynchronous operation.</returns>

@@ -32,7 +32,7 @@ public abstract class EventBase : IDomainEvent
     public string? CausationId { get; set; }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="EventBase{EnumType}"/> class.
+    /// Initializes a new instance of the <see cref="EventBase"/> class.
     /// This constructor is used to create an event without any specific parameters.
     /// </summary>
     protected EventBase()
@@ -40,7 +40,7 @@ public abstract class EventBase : IDomainEvent
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="EventBase{EnumType}"/> class with a specified creation time and event ID.
+    /// Initializes a new instance of the <see cref="EventBase"/> class with a specified creation time and event ID.
     /// This constructor is used to create an event with a specific creation time and identifier,
     /// optionally including correlation and causation IDs.
     /// </summary>
@@ -53,7 +53,7 @@ public abstract class EventBase : IDomainEvent
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="EventBase{EnumType}"/> class with a specified event ID.
+    /// Initializes a new instance of the <see cref="EventBase"/> class with a specified event ID.
     /// This constructor is used to create an event with a specific identifier, optionally including correlation and causation IDs.
     /// </summary>
     public EventBase(string eventId, string? correlationId = null, string? causationId = null)

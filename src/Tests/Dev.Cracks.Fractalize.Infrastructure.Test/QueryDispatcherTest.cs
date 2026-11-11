@@ -1,4 +1,3 @@
-using DevCracks.Fractalize.Domain.Commands;
 using DevCracks.Fractalize.Domain.Queries;
 using DevCracks.Fractalize.Infrastructure.Queries;
 using Microsoft.Extensions.DependencyInjection;

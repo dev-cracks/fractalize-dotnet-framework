@@ -59,7 +59,7 @@ public static class ConfigurationExtensions
 
     /// <summary>
     /// Registers a command dispatcher for a specific command type.
-    /// This method attempts to add a transient service of type ICommandDispatcher<TCommand> to the IServiceCollection.
+    /// This method attempts to add a transient service of type <see cref="ICommandDispatcher{TCommand}"/> to the IServiceCollection.
     /// It uses the TryAddTransient method from the Microsoft.Extensions.DependencyInjection.Extensions namespace,
     /// which will only add the service if it has not already been registered.
     /// The TCommand type parameter must implement the ICommand interface, ensuring that the command dispatcher can handle commands of that type.
@@ -118,7 +118,7 @@ public static class ConfigurationExtensions
     /// Registers a command handler for a specific command type.
     /// This method attempts to add a transient service of type ICommand to the IServiceCollection,
     /// ensuring that the command type TCommand implements the ICommand interface.
-    /// It then calls TryAddCommandDispatcher<TCommand>() to register the command dispatcher for the specified command type.
+    /// It then calls <see cref="TryAddCommandDispatcher{TCommand}(IServiceCollection)"/> to register the command dispatcher for the specified command type.
     /// This method is typically used in the ConfigureServices method of the Startup class to set up command handling for a specific command type.
     /// The command handler is responsible for processing commands of type TCommand and executing the associated business logic.
     /// The method returns the IServiceCollection to allow for method chaining in the configuration process.
