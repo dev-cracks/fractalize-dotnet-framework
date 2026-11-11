@@ -34,7 +34,7 @@ public class QueryDispatcher<TQuery, TResult>(IServiceProvider provider) : IQuer
     /// It is designed to be used in applications that follow the CQRS (Command Query Responsibility Segregation) pattern,
     /// where queries are separated from commands, allowing for a clear distinction between read and write operations.
     /// The QueryDispatcher class is intended to be used in applications that follow the CQRS pattern,
-    /// where queries are separated from commands, allowing for a clear distinction between read and write operations.  
+    /// where queries are separated from commands, allowing for a clear distinction between read and write operations.
     /// </summary>
     /// <param name="query"></param>
     /// <param name="cancellationToken"></param>

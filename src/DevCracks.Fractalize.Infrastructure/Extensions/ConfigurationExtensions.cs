@@ -6,7 +6,7 @@ namespace DevCracks.Fractalize.Infrastructure.Extensions;
 /// <summary>
 /// Extension methods for configuring application settings in the service collection.
 /// This class provides methods to add configuration sections to the service collection,
-/// allowing for easy access to application settings throughout the application.    
+/// allowing for easy access to application settings throughout the application.
 /// </summary>
 public static class ConfigurationExtensions
 {
