@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.1.0](https://github.com/dev-cracks/fractalize-dotnet-framework/compare/v2.0.0...v2.1.0) (2026-11-13)
+
+
+### Features
+
+* **ddd:** integrate the DDD core as the Efc.Fractalize.Ddd package ([#11](https://github.com/dev-cracks/fractalize-dotnet-framework/issues/11)) ([8f8373e](https://github.com/dev-cracks/fractalize-dotnet-framework/commit/8f8373e0b7149ed567bab502855557855af13411))
+
 ## [2.0.0](https://github.com/dev-cracks/fractalize-dotnet-framework/compare/v1.0.1...v2.0.0) (2026-11-11)
 
 
