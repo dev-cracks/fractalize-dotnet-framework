@@ -34,18 +34,41 @@ public class AggregateRootBaseTest
         Assert.Equal([created, renamed], aggregate.DomainEvents);
     }
 
-    // Characterization of the inherited bug (ADR 0087 n.º 3): ClearDomainEvents adds the event
-    // instead of emptying the list. A later commit fixes it on purpose.
+    // Regression test (ADR 0087 n.º 3): ClearDomainEvents used to add the event instead of
+    // emptying the list.
     [Fact]
-    public void ClearDomainEvents_WithAnEvent_AddsItInsteadOfClearing()
+    public void ClearDomainEvents_WithPendingEvents_RemovesThemAll()
     {
         var aggregate = new TestAggregate { Id = Guid.NewGuid() };
-        var created = new TestDomainEvent { Name = "created", Date = TestClock.Now };
-        aggregate.AddDomainEvent(created);
+        aggregate.AddDomainEvent(new TestDomainEvent { Name = "created", Date = TestClock.Now });
+        aggregate.AddDomainEvent(new TestDomainEvent { Name = "renamed", Date = TestClock.Now });
 
-        aggregate.ClearDomainEvents(created);
+        aggregate.ClearDomainEvents();
 
-        Assert.Equal([created, created], aggregate.DomainEvents);
+        Assert.Empty(aggregate.DomainEvents);
+    }
+
+    [Fact]
+    public void ClearDomainEvents_OnANewAggregate_KeepsItEmpty()
+    {
+        var aggregate = new TestAggregate { Id = Guid.NewGuid() };
+
+        aggregate.ClearDomainEvents();
+
+        Assert.Empty(aggregate.DomainEvents);
+    }
+
+    [Fact]
+    public void AddDomainEvent_AfterClearing_StartsANewList()
+    {
+        var aggregate = new TestAggregate { Id = Guid.NewGuid() };
+        aggregate.AddDomainEvent(new TestDomainEvent { Name = "created", Date = TestClock.Now });
+        aggregate.ClearDomainEvents();
+        var renamed = new TestDomainEvent { Name = "renamed", Date = TestClock.Now };
+
+        aggregate.AddDomainEvent(renamed);
+
+        Assert.Same(renamed, Assert.Single(aggregate.DomainEvents));
     }
 
     private sealed class TestAggregate : AggregateRootBase<Guid>;
