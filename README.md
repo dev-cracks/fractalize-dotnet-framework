@@ -104,18 +104,23 @@ entities, aggregate roots or domain events. Replace them as follows:
 | --- | --- |
 | `Efc.Fractalize.Domain.Entities.EntityBase<TId>` | `Efc.Fractalize.Ddd.EntityBase<TId>` |
 | `Efc.Fractalize.Domain.Entities.AggregateRootBase<TId>` | `Efc.Fractalize.Ddd.AggregateRootBase<TId>` |
-| `Efc.Fractalize.Domain.Events.IDomainEvent` | `Efc.Fractalize.Ddd.DomainEventBase` |
-| `Efc.Fractalize.Domain.Events.EventBase` | `Efc.Fractalize.Ddd.DomainEventBase` |
+| `Efc.Fractalize.Domain.Events.IDomainEvent` (an interface) | `Efc.Fractalize.Ddd.DomainEventBase` (an abstract class): events that were records or derived from another base class do not migrate one to one |
+| `Efc.Fractalize.Domain.Events.EventBase` | `Efc.Fractalize.Ddd.DomainEventBase`, whose `Name` is required |
+| Public constructors of `EventBase` | No equivalent: set `Name` and `Date` with an object initializer |
 | `EntityBase(TId id)` constructor, `protected set` on `Id` | `required` init-only `Id`: `new Order { Id = id }`, or set it in the derived constructor marked `[SetsRequiredMembers]` |
+| `where TId : notnull` on `AggregateRootBase<TId>` | No constraint |
 | `AggregateRootBase.AddEvent(IDomainEvent)` | `AddDomainEvent(DomainEventBase)` |
 | `AggregateRootBase.ClearEvents()` | `ClearDomainEvents()` |
-| `EntityBase.Events` (declared on every entity) | `AggregateRootBase.DomainEvents` (only aggregate roots record events) |
+| `EntityBase.Events` (`IReadOnlyList<IDomainEvent>`, on every entity) | `AggregateRootBase.DomainEvents` (`IReadOnlyCollection<DomainEventBase>`, only aggregate roots record events) |
+| Protected `_events` field | No equivalent: use `AddDomainEvent` and `DomainEvents` |
 | `EventBase.CreatedAt` (set from `DateTimeOffset.UtcNow`) | `DomainEventBase.Date`, taken from an injected `TimeProvider` |
 | `EventBase.EventId`, `CorrelationId`, `CausationId` | No equivalent: declare them in your own event type if you need them |
 | `EntityBase.ToString()` (`"Type [Id=…]"`) | No override: write it in your entity if you need it |
+| `==` and `!=` on entities (reference comparison) | Identity comparison, like `Equals` |
 
-Equality also changes: two entities are equal only when they have the same concrete type and the same non-default
-`Id`; a transient entity (default `Id`) is only equal to itself.
+Equality also changes: two entities are equal only when the type reported by `GetUnproxiedType()` (the runtime
+type unless an entity overrides it for ORM proxies) and the non-default `Id` match; a transient entity (default
+`Id`) is only equal to itself.
 
 ## 🛠️ Building from source
 
