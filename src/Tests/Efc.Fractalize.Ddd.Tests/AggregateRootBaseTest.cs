@@ -71,5 +71,26 @@ public class AggregateRootBaseTest
         Assert.Same(renamed, Assert.Single(aggregate.DomainEvents));
     }
 
+    [Fact]
+    public void AddDomainEvent_WithNull_ThrowsArgumentNullException()
+    {
+        var aggregate = new TestAggregate { Id = Guid.NewGuid() };
+
+        Assert.Throws<ArgumentNullException>(() => aggregate.AddDomainEvent(null!));
+        Assert.Empty(aggregate.DomainEvents);
+    }
+
+    [Fact]
+    public void DomainEvents_CannotBeChangedByCallers()
+    {
+        var aggregate = new TestAggregate { Id = Guid.NewGuid() };
+        aggregate.AddDomainEvent(new TestDomainEvent { Name = "created", Date = TestClock.Now });
+
+        Assert.IsNotType<List<DomainEventBase>>(aggregate.DomainEvents);
+        var view = Assert.IsAssignableFrom<ICollection<DomainEventBase>>(aggregate.DomainEvents);
+        Assert.True(view.IsReadOnly);
+        Assert.Throws<NotSupportedException>(view.Clear);
+    }
+
     private sealed class TestAggregate : AggregateRootBase<Guid>;
 }

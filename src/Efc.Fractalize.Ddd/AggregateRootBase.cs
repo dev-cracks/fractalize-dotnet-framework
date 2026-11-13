@@ -5,9 +5,14 @@ namespace Efc.Fractalize.Ddd;
 /// raised while they change.
 /// </summary>
 /// <remarks>
+/// <para>
 /// Overlaps with <c>Efc.Fractalize.Domain.Entities.AggregateRootBase&lt;TId&gt;</c>
 /// in the <c>Efc.Fractalize.Domain</c> package. Both are kept until the maintainers decide which one
 /// survives; do not mix them in the same model.
+/// </para>
+/// <para>
+/// Not thread-safe: an aggregate is meant to be changed by one operation at a time.
+/// </para>
 /// </remarks>
 /// <typeparam name="TId">Type of the identifier.</typeparam>
 public abstract class AggregateRootBase<TId> : EntityBase<TId>
@@ -15,16 +20,21 @@ public abstract class AggregateRootBase<TId> : EntityBase<TId>
     private readonly List<DomainEventBase> _domainEvents = [];
 
     /// <summary>
-    /// Domain events raised and not yet dispatched, in the order they were added.
+    /// Domain events raised and not yet dispatched, in the order they were added. It is a read-only view:
+    /// callers cannot change the list through it.
     /// </summary>
-    public IReadOnlyCollection<DomainEventBase> DomainEvents => _domainEvents;
+    public IReadOnlyCollection<DomainEventBase> DomainEvents => _domainEvents.AsReadOnly();
 
     /// <summary>
     /// Records a domain event raised by the aggregate.
     /// </summary>
     /// <param name="domainEvent">The event to record.</param>
-    public void AddDomainEvent(DomainEventBase domainEvent) =>
+    /// <exception cref="ArgumentNullException"><paramref name="domainEvent"/> is <see langword="null"/>.</exception>
+    public void AddDomainEvent(DomainEventBase domainEvent)
+    {
+        ArgumentNullException.ThrowIfNull(domainEvent);
         _domainEvents.Add(domainEvent);
+    }
 
     /// <summary>
     /// Removes every pending domain event, typically after they have been dispatched.
