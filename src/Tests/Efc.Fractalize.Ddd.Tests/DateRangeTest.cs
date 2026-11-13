@@ -90,15 +90,28 @@ public class DateRangeTest
         Assert.True(range.Overlaps(other));
     }
 
-    // Characterization of the inherited bug: Overlaps ignores the end of the other range, so a
-    // range that ends before this one starts is reported as overlapping.
-    [Fact]
-    public void Overlaps_WithARangeBeforeThisOne_ReturnsTrue()
+    // Regression test: Overlaps used to ignore the end of the other range, so a range that ends
+    // before this one starts was reported as overlapping.
+    [Theory]
+    [InlineData(-3, -2)]
+    [InlineData(-1, 0)]
+    public void Overlaps_WithARangeBeforeThisOne_ReturnsFalse(int startHours, int endHours)
     {
         var range = new DateRange(Start, Start.AddHours(2));
-        var earlier = new DateRange(Start.AddHours(-3), Start.AddHours(-2));
+        var earlier = new DateRange(Start.AddHours(startHours), Start.AddHours(endHours));
 
-        Assert.True(range.Overlaps(earlier));
+        Assert.False(range.Overlaps(earlier));
+        Assert.False(earlier.Overlaps(range));
+    }
+
+    [Fact]
+    public void Overlaps_WithARangeThatContainsIt_ReturnsTrue()
+    {
+        var range = new DateRange(Start, Start.AddHours(2));
+        var wider = new DateRange(Start.AddHours(-1), Start.AddHours(3));
+
+        Assert.True(range.Overlaps(wider));
+        Assert.True(wider.Overlaps(range));
     }
 
     [Fact]

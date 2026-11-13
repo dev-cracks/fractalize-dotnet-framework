@@ -31,7 +31,7 @@ public record DateRange : ValueObjectBase
     }
 
     public bool Overlaps(DateRange dateRange) =>
-        Start < End && End > dateRange.Start;
+        Start < dateRange.End && End > dateRange.Start;
 
     public int DurationInMinutesRounded() => (int)DurationInMinutes();
 
