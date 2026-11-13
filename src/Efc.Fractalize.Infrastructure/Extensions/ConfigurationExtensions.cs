@@ -18,6 +18,11 @@ public static class ConfigurationExtensions
     /// <param name="configuration">The configuration instance.</param>
     /// <param name="sectionName">The name of the configuration section.</param>
     /// <returns>The service collection with the added configuration section.</returns>
+    /// <remarks>
+    /// Kept for backward compatibility with unchanged behaviour: the section is bound only when it exists and is
+    /// not validated. New code uses <see cref="OptionsConfigurator"/>, which validates at startup.
+    /// </remarks>
+    [Obsolete("Use OptionsConfigurator.AddValidatedOptions instead.")]
     public static IServiceCollection AddConfigurationSection<T>(
         this IServiceCollection services,
         IConfiguration configuration,
