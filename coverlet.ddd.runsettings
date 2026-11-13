@@ -2,7 +2,7 @@
 <!--
   Code coverage of the DDD core only (Efc.Fractalize.Ddd), used by the 90 % gate of ci.yml (ADR 0094, Q23).
   Unlike coverlet.runsettings it does not exclude [Obsolete] or [ExcludeFromCodeCoverage] code: every line of
-  the package counts. ci.yml also fails if new [Obsolete] or [ExcludeFromCodeCoverage] attributes appear in it.
+  the package counts. ci.yml also fails if any [Obsolete] or [ExcludeFromCodeCoverage] attribute appears in it.
 -->
 <RunSettings>
   <DataCollectionRunSettings>

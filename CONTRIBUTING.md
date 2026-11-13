@@ -21,8 +21,8 @@ The solution lives in [`src/Efc.Fractalize.Framework.sln`](src/Efc.Fractalize.Fr
 the libraries are `Efc.Fractalize.Domain`, `Efc.Fractalize.Ddd`, `Efc.Fractalize.Application` and
 `Efc.Fractalize.Infrastructure`, and their tests are under `src/Tests/`. The DDD core
 (`Efc.Fractalize.Ddd`) must keep at least 90 % line coverage with its own tests, measured with
-[`coverlet.ddd.runsettings`](coverlet.ddd.runsettings), which counts `[Obsolete]` code too; CI also rejects new
-`[Obsolete]` or `[ExcludeFromCodeCoverage]` attributes in it.
+[`coverlet.ddd.runsettings`](coverlet.ddd.runsettings), which excludes nothing but generated code; CI also rejects any
+`[Obsolete]` or `[ExcludeFromCodeCoverage]` attribute in it.
 
 ```bash
 # Restore, build with warnings as errors and run the tests before opening a pull request.

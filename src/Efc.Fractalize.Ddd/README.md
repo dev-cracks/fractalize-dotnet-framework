@@ -16,7 +16,6 @@ dotnet add package Efc.Fractalize.Ddd
 | `AggregateRootBase<TId>` | Entity that records domain events: `AddDomainEvent`, `DomainEvents` and `ClearDomainEvents()` |
 | `DomainEventBase` | Base class for domain events, with init-only `Name` and `Date` |
 | `ValueObjectBase` | Base record for value objects (record value equality) |
-| `ValueObjectLegacyBase` | Obsolete class-based value object with `IComparable`; use `ValueObjectBase` |
 | `DateRange` | Value object for a period: validation, `Overlaps` and duration in minutes |
 | `IReadRepository<TEntity, TId>` | Read access: `GetAllAsync`, `WhereAsync` and `GetByIdAsync` |
 | `IRepository<TEntity, TId>` | Marker for the repository of an aggregate root |
@@ -66,6 +65,7 @@ This package comes from `dev-cracks/fractalize-dotnet-ddd` (formerly `ddd-csharp
 - The entity `Id` is init-only and entities are compared by identity.
 - The custom `IClockStamp` abstraction is replaced by `System.TimeProvider`.
 - `DateRange.Overlaps` takes the end of the other range into account.
+- The obsolete `ValueObjectLegacyBase` is removed: use `ValueObjectBase`.
 
 ## License
 

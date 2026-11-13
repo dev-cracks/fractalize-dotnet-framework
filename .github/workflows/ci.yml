@@ -108,17 +108,14 @@ jobs:
           --collect "XPlat Code Coverage" --settings coverlet.ddd.runsettings
           --results-directory TestResults/ddd
           && python3 tools/check_coverage.py TestResults/ddd --min "$DDD_COVERAGE_MIN"
-      # Nothing in the DDD core may hide from coverage. The only allowed attribute is the [Obsolete] of
-      # ValueObjectLegacyBase, kept until the maintainers decide whether to remove that type.
+      # Nothing in the DDD core may hide from coverage: no [Obsolete] or [ExcludeFromCodeCoverage] at all.
       - name: No new [Obsolete] or [ExcludeFromCodeCoverage] in Efc.Fractalize.Ddd
         run: |
-          allowed='src/Efc.Fractalize.Ddd/ValueObjectLegacyBase.cs:[0-9]+:\[Obsolete\(\$"Use \{nameof\(ValueObjectBase\)\} instead"\)\]$'
           found="$(grep -rnwE 'Obsolete|ObsoleteAttribute|ExcludeFromCodeCoverage|ExcludeFromCodeCoverageAttribute' \
             --include='*.cs' src/Efc.Fractalize.Ddd || true)"
-          unexpected="$(echo "$found" | grep -vE "$allowed" | sed '/^$/d' || true)"
-          if [ -n "$unexpected" ]; then
+          if [ -n "$found" ]; then
             echo "::error::Efc.Fractalize.Ddd must not hide code from coverage:"
-            echo "$unexpected"
+            echo "$found"
             exit 1
           fi
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
