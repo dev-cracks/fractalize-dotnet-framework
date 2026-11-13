@@ -19,8 +19,8 @@
 | --- | --- |
 | `Efc.Fractalize.Domain` | Building blocks with no dependencies: `EntityBase`, `AggregateRootBase`, `IDomainEvent`, `EventBase`, and the `ICommand` / `IQuery` contracts with their handlers and dispatchers |
 | [`Efc.Fractalize.Ddd`](src/Efc.Fractalize.Ddd/README.md) | Domain-driven design core with no dependencies: `EntityBase` with identity equality, `AggregateRootBase` with domain events, `DomainEventBase`, `ValueObjectBase`, `DateRange`, and the `IReadRepository` / `IRepository` / `IUnitOfWorkBase` contracts. It overlaps with `Efc.Fractalize.Domain` until the maintainers decide which types survive |
-| `Efc.Fractalize.Application` | `CommandDispatcher` and the registration of command dispatchers and handlers (`AddCommandDispatchers`, `AddCommandHandlers`, `AddCqrs`) |
-| `Efc.Fractalize.Infrastructure` | `QueryDispatcher`, the registration of query dispatchers and handlers (`AddQueryDispatchers`, `AddQueryHandlers`) and validated configuration sections (`AddConfigurationSection`) |
+| `Efc.Fractalize.Application` | `CommandDispatcher` and its fluent configurator, `CommandDispatcherConfigurator` (`AddCommandDispatcher`) |
+| `Efc.Fractalize.Infrastructure` | `QueryDispatcher` and `QueryDispatcherConfigurator` (`AddQueryDispatcher`), `CqrsConfigurator` (`AddCqrsDispatchers`: commands and queries in one call) and `OptionsConfigurator` (`AddValidatedOptions`: options validated at startup). Depends on `Efc.Fractalize.Application` |
 
 The libraries target `net10.0` and are published to [NuGet](https://www.nuget.org/packages/Efc.Fractalize.Infrastructure).
 
@@ -34,7 +34,7 @@ Define a query and its handler, register them and dispatch the query:
 
 ```csharp
 using Efc.Fractalize.Domain.Queries;
-using Efc.Fractalize.Infrastructure.Queries;
+using Efc.Fractalize.Infrastructure.Extensions;
 
 public sealed record GetGreeting(string Name) : IQuery<string>;
 
@@ -44,8 +44,8 @@ public sealed class GetGreetingHandler : IQueryHandler<GetGreeting, string>
         Task.FromResult($"Hello, {query.Name}!");
 }
 
-// At startup: register the query's dispatcher and scan the handlers.
-services.TryAddQueryDispatcher<GetGreeting, string>().AddQueryHandlers();
+// At startup: register the command and query dispatchers and the handlers of this assembly.
+services.AddCqrsDispatchers(typeof(GetGreetingHandler).Assembly);
 
 // Anywhere: resolve the dispatcher for the query and send it.
 var greeting = await provider
@@ -53,8 +53,47 @@ var greeting = await provider
     .DispatchAsync(new GetGreeting("Fractalize"));
 ```
 
-Commands work the same way with `ICommand`, `ICommandHandler<TCommand>`, `TryAddCommandDispatcher<TCommand>()`
-and `AddCommandHandlers()` from `Efc.Fractalize.Application.Commands`.
+Commands work the same way with `ICommand`, `ICommandHandler<TCommand>` and `ICommandDispatcher<TCommand>`. Each
+configurator can also be used on its own: `AddCommandDispatcher(...)` (`Efc.Fractalize.Application.Commands`) and
+`AddQueryDispatcher(...)` (`Efc.Fractalize.Infrastructure.Queries`) register the dispatcher and scan the handlers
+of the given assemblies (every application dependency when none is given), and `AddCommandDispatcher<TCommand>()` /
+`AddQueryDispatcher<TQuery, TResult>()` register the dispatcher of a single message. Every registration uses
+`TryAdd*`, so a host can replace any implementation and calling a configurator twice is harmless.
+
+Options are bound and validated with data annotations when the application starts, as the
+[engineering standards](docs/engineering-standards.md#4-configuration-the-options-pattern) require:
+
+```csharp
+using Efc.Fractalize.Infrastructure.Extensions;
+
+// From configuration (appsettings + environment variables)...
+services.AddValidatedOptions<ShipmentRepositoryOptions>(configuration, ShipmentRepositoryOptions.SectionName);
+
+// ...or from code (tests, other hosts, values read from a database).
+services.AddValidatedOptions<ShipmentRepositoryOptions>(o => o.ConnectionString = connectionString);
+```
+
+### Migrating from 2.x helpers
+
+The 2.x registration helpers still work with the same behaviour, but they are marked `[Obsolete]` and will be
+removed in the next major version. Replace them as follows:
+
+| 2.x helper (obsolete) | Replacement |
+| --- | --- |
+| `AddCqrs()` | `AddCqrsDispatchers(assemblies)` (`CqrsConfigurator`, `Efc.Fractalize.Infrastructure`) |
+| `AddCommandHandlers()`, `AddCommandDispatchers()` | `AddCommandDispatcher(assemblies)` (`CommandDispatcherConfigurator`) |
+| `TryAddCommandDispatcher<TCommand>()`, `ConfigureCommandHandler<TCommand>()` | `AddCommandDispatcher<TCommand>()` |
+| `AddQueryHandlers()`, `AddQueryDispatchers()` | `AddQueryDispatcher(assemblies)` (`QueryDispatcherConfigurator`) |
+| `TryAddQueryDispatcher<TQuery, TResult>()`, `ConfigureQueryHandler<TQuery, TResult>()` | `AddQueryDispatcher<TQuery, TResult>()` |
+| `AddConfigurationSection<T>(configuration, sectionName)` | `AddValidatedOptions<T>(configuration, sectionName)` (`OptionsConfigurator`) |
+
+Differences to keep in mind:
+
+- The new configurators use `TryAdd*`: a handler or dispatcher registered earlier is kept, not duplicated.
+- `AddCommandDispatcher(...)` and `AddQueryDispatcher(...)` also register the dispatcher for every message type, so
+  the per-message `AddCommandDispatcher<TCommand>()` / `AddQueryDispatcher<TQuery, TResult>()` calls are optional.
+- `AddValidatedOptions` always registers the options and validates them at startup: a missing or invalid section
+  fails when the host starts, while `AddConfigurationSection` skipped missing sections and never validated.
 
 ## 🛠️ Building from source
 

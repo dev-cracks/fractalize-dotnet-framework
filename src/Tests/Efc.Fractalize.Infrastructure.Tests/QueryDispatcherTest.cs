@@ -13,15 +13,21 @@ public class QueryDispatcherTest
         // Arrange
         var services = new ServiceCollection();
         services.TryAddTransient<IQueryHandler<SampleQuery, string>, SampleHandler>();
-        services.AddQueryDispatchers();
         var queryDispatcher = new QueryDispatcher<SampleQuery, string>(services.BuildServiceProvider());
 
         // Act
         var result = await queryDispatcher.DispatchAsync(new SampleQuery());
 
         // Assert
-        Assert.NotNull(result);
         Assert.Equal("Sample Result", result);
+    }
+
+    [Fact]
+    public async Task QueryDispatcher_WithoutHandler_Throws()
+    {
+        var queryDispatcher = new QueryDispatcher<SampleQuery, string>(new ServiceCollection().BuildServiceProvider());
+
+        await Assert.ThrowsAsync<InvalidOperationException>(() => queryDispatcher.DispatchAsync(new SampleQuery()));
     }
 
     [Fact]
@@ -29,34 +35,14 @@ public class QueryDispatcherTest
     {
         // Arrange
         var services = new ServiceCollection();
-        services.TryAddQueryDispatcher<SampleQuery, string>();
+        services.AddQueryDispatcher<SampleQuery, string>();
         services.TryAddTransient<IQueryHandler<SampleQuery, string>, SampleHandler>();
-        var serviceProvider = services.BuildServiceProvider();
-        var queryDispatcher = serviceProvider.GetRequiredService<IQueryDispatcher<SampleQuery, string>>();
+        var queryDispatcher = services.BuildServiceProvider().GetRequiredService<IQueryDispatcher<SampleQuery, string>>();
 
         // Act
         var result = await queryDispatcher.DispatchAsync(new SampleQuery());
 
         // Assert
-        Assert.NotNull(result);
-        Assert.Equal("Sample Result", result);
-    }
-
-    [Fact]
-    public async Task QueryHandler_WithValidConfiguration_Handles()
-    {
-        // Arrange
-        var services = new ServiceCollection();
-        services.TryAddQueryDispatcher<SampleQuery, string>();
-        services.AddQueryHandlers();
-        var serviceProvider = services.BuildServiceProvider();
-        var queryDispatcher = serviceProvider.GetRequiredService<IQueryDispatcher<SampleQuery, string>>();
-
-        // Act
-        var result = await queryDispatcher.DispatchAsync(new SampleQuery());
-
-        // Assert
-        Assert.NotNull(result);
         Assert.Equal("Sample Result", result);
     }
 }
