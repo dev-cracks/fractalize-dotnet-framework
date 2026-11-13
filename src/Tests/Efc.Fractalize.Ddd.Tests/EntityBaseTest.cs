@@ -117,7 +117,65 @@ public class EntityBaseTest
         Assert.Equal(2, set.Count);
     }
 
+    [Fact]
+    public void Equals_WithAnObjectThatIsNotAnEntity_ReturnsFalse()
+    {
+        EntityBase<int> entity = new TestEntity { Id = 1 };
+        object notAnEntity = new();
+
+        Assert.False(entity.Equals(notAnEntity));
+    }
+
+    [Fact]
+    public void Equals_AcrossATwoLevelHierarchy_ComparesTheConcreteType()
+    {
+        EntityBase<int> parent = new ParentEntity { Id = 1 };
+        EntityBase<int> child = new ChildEntity { Id = 1 };
+        EntityBase<int> otherChild = new ChildEntity { Id = 1 };
+
+        Assert.False(parent.Equals(child));
+        Assert.False(child.Equals(parent));
+        Assert.False(parent.Equals((object)child));
+        Assert.True(child.Equals(otherChild));
+        Assert.True(child.Equals((object)otherChild));
+        Assert.Equal(child.GetHashCode(), otherChild.GetHashCode());
+    }
+
+    [Fact]
+    public void Equals_WithAProxyThatReportsTheEntityType_ReturnsTrue()
+    {
+        EntityBase<int> entity = new ParentEntity { Id = 1 };
+        EntityBase<int> proxy = new ParentEntityProxy { Id = 1 };
+
+        Assert.True(entity.Equals(proxy));
+        Assert.True(proxy.Equals(entity));
+        Assert.True(entity.Equals((object)proxy));
+        Assert.True(entity == proxy);
+        Assert.Equal(entity.GetHashCode(), proxy.GetHashCode());
+    }
+
+    [Fact]
+    public void GetHashCode_ChangesWhenATransientEntityIsReplacedByItsPersistedIdentity()
+    {
+        EntityBase<int> transient = new TestEntity { Id = 0 };
+        EntityBase<int> persisted = new TestEntity { Id = 1 };
+        HashSet<EntityBase<int>> set = [transient];
+
+        Assert.Contains(transient, set);
+        Assert.DoesNotContain(persisted, set);
+    }
+
     private sealed class TestEntity : EntityBase<int>;
+
+    private class ParentEntity : EntityBase<int>;
+
+    private sealed class ChildEntity : ParentEntity;
+
+    // Simulates an ORM proxy: a runtime subclass that reports the type of the entity it stands for.
+    private sealed class ParentEntityProxy : ParentEntity
+    {
+        protected override Type GetUnproxiedType() => typeof(ParentEntity);
+    }
 
     private sealed class OtherEntity : EntityBase<int>;
 
