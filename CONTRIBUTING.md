@@ -18,8 +18,11 @@ documentation, bug reports, tests or new features.
 | .NET runtime | 10.0, to run the tests (the libraries target `net10.0`) |
 
 The solution lives in [`src/Efc.Fractalize.Framework.sln`](src/Efc.Fractalize.Framework.sln):
-the libraries are `Efc.Fractalize.Domain`, `Efc.Fractalize.Application` and
-`Efc.Fractalize.Infrastructure`, and their tests are under `src/Tests/`.
+the libraries are `Efc.Fractalize.Domain`, `Efc.Fractalize.Ddd`, `Efc.Fractalize.Application` and
+`Efc.Fractalize.Infrastructure`, and their tests are under `src/Tests/`. The DDD core
+(`Efc.Fractalize.Ddd`) must keep at least 90 % line coverage with its own tests, measured with
+[`coverlet.ddd.runsettings`](coverlet.ddd.runsettings), which excludes nothing but generated code; CI also rejects any
+`[Obsolete]` or `[ExcludeFromCodeCoverage]` attribute in it.
 
 ```bash
 # Restore, build with warnings as errors and run the tests before opening a pull request.
@@ -27,6 +30,8 @@ dotnet restore src/Efc.Fractalize.Framework.sln
 dotnet build src/Efc.Fractalize.Framework.sln --no-restore -c Release -warnaserror
 dotnet test src/Efc.Fractalize.Framework.sln --no-build -c Release --collect "XPlat Code Coverage" --settings coverlet.runsettings --results-directory TestResults
 python3 tools/check_coverage.py TestResults --min 80
+dotnet test src/Tests/Efc.Fractalize.Ddd.Tests --no-build -c Release --collect "XPlat Code Coverage" --settings coverlet.ddd.runsettings --results-directory TestResults/ddd
+python3 tools/check_coverage.py TestResults/ddd --min 90
 
 # With only a newer runtime installed (no 10.0 runtime), let the tests roll forward to it:
 DOTNET_ROLL_FORWARD=Major dotnet test src/Efc.Fractalize.Framework.sln --no-build -c Release
@@ -45,7 +50,7 @@ Repository-wide checks run in CI on every pull request:
 | `editorconfig` | Encoding, line endings, indentation and trailing whitespace ([`.editorconfig`](.editorconfig)) |
 | `actionlint` | GitHub Actions workflow syntax and shell scripts |
 | `powershell` | PowerShell syntax and PSScriptAnalyzer rules |
-| `dotnet` | Restore, build with `-warnaserror` (code-style rules included), tests and minimum line coverage ([`tools/check_coverage.py`](tools/check_coverage.py)) |
+| `dotnet` | Restore, build with `-warnaserror` (code-style rules included), tests and minimum line coverage ([`tools/check_coverage.py`](tools/check_coverage.py)): 80 % for the solution and 90 % for `Efc.Fractalize.Ddd` |
 | `conventional-commits` | Pull request title format |
 | CodeQL (`actions`, `csharp`), dependency review | Security analysis and vulnerable dependencies |
 

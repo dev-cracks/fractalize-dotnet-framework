@@ -76,7 +76,7 @@ jobs:
         dotnet build "$SOLUTION_PATH" --configuration "$BUILD_CONFIGURATION" --no-restore -warnaserror
         "-p:Version=$PACKAGE_VERSION" -p:ContinuousIntegrationBuild=true
 
-    # Packs every packable project (Efc.Fractalize.Domain, .Application and .Infrastructure).
+    # Packs every packable project (Efc.Fractalize.Domain, .Ddd, .Application and .Infrastructure).
     - name: Pack NuGet Packages
       env:
         PACKAGE_VERSION: ${{ steps.version.outputs.value }}

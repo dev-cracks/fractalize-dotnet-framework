@@ -18,6 +18,7 @@
 | Package | Contents |
 | --- | --- |
 | `Efc.Fractalize.Domain` | Building blocks with no dependencies: `EntityBase`, `AggregateRootBase`, `IDomainEvent`, `EventBase`, and the `ICommand` / `IQuery` contracts with their handlers and dispatchers |
+| [`Efc.Fractalize.Ddd`](src/Efc.Fractalize.Ddd/README.md) | Domain-driven design core with no dependencies: `EntityBase` with identity equality, `AggregateRootBase` with domain events, `DomainEventBase`, `ValueObjectBase`, `DateRange`, and the `IReadRepository` / `IRepository` / `IUnitOfWorkBase` contracts. It overlaps with `Efc.Fractalize.Domain` until the maintainers decide which types survive |
 | `Efc.Fractalize.Application` | `CommandDispatcher` and its fluent configurator, `CommandDispatcherConfigurator` (`AddCommandDispatcher`) |
 | `Efc.Fractalize.Infrastructure` | `QueryDispatcher` and `QueryDispatcherConfigurator` (`AddQueryDispatcher`), `CqrsConfigurator` (`AddCqrsDispatchers`: commands and queries in one call) and `OptionsConfigurator` (`AddValidatedOptions`: options validated at startup). Depends on `Efc.Fractalize.Application` |
 
