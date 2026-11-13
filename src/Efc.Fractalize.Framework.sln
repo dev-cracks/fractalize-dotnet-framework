@@ -25,6 +25,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Efc.Fractalize.Application.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Efc.Fractalize.Infrastructure.Tests", "Tests\Efc.Fractalize.Infrastructure.Tests\Efc.Fractalize.Infrastructure.Tests.csproj", "{F39EA41E-E3F6-4EAA-8871-1B596A414A0B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Efc.Fractalize.Ddd", "Efc.Fractalize.Ddd\Efc.Fractalize.Ddd.csproj", "{ADAB64F8-0E98-4C81-BF06-4706FBA9B714}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Efc.Fractalize.Ddd.Tests", "Tests\Efc.Fractalize.Ddd.Tests\Efc.Fractalize.Ddd.Tests.csproj", "{5E416170-D140-411F-8655-FE7E92CD77CC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -55,6 +59,14 @@ Global
 		{F39EA41E-E3F6-4EAA-8871-1B596A414A0B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F39EA41E-E3F6-4EAA-8871-1B596A414A0B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F39EA41E-E3F6-4EAA-8871-1B596A414A0B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ADAB64F8-0E98-4C81-BF06-4706FBA9B714}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ADAB64F8-0E98-4C81-BF06-4706FBA9B714}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ADAB64F8-0E98-4C81-BF06-4706FBA9B714}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ADAB64F8-0E98-4C81-BF06-4706FBA9B714}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5E416170-D140-411F-8655-FE7E92CD77CC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5E416170-D140-411F-8655-FE7E92CD77CC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5E416170-D140-411F-8655-FE7E92CD77CC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5E416170-D140-411F-8655-FE7E92CD77CC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -65,5 +77,6 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{0B32F6BE-3E24-46AB-8C68-526EBA620993} = {85AF1F0A-C3D0-470F-A61A-D79250CF6E29}
 		{F39EA41E-E3F6-4EAA-8871-1B596A414A0B} = {85AF1F0A-C3D0-470F-A61A-D79250CF6E29}
+		{5E416170-D140-411F-8655-FE7E92CD77CC} = {85AF1F0A-C3D0-470F-A61A-D79250CF6E29}
 	EndGlobalSection
 EndGlobal

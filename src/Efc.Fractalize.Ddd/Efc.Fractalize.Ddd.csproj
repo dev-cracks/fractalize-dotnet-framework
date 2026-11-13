@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>Efc.Fractalize.Ddd</RootNamespace>
+    <Authors>Daniel F Yepes Ortega</Authors>
+    <Company>Dev Cracks</Company>
+    <PackageId>Efc.Fractalize.Ddd</PackageId>
+    <Description>Domain-driven design core with no dependencies: entities, aggregate roots, domain events, value objects, the DateRange value object and the repository and unit of work contracts.</Description>
+    <RepositoryUrl>https://github.com/dev-cracks/fractalize-dotnet-framework</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageProjectUrl>https://github.com/dev-cracks/fractalize-dotnet-framework</PackageProjectUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageTags>dotnet;framework;fractal;architecture;library;ddd;domain-driven-design</PackageTags>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+  </PropertyGroup>
+</Project>
