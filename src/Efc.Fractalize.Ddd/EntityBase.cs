@@ -15,6 +15,11 @@ namespace Efc.Fractalize.Ddd;
 /// the same, non-default <see cref="Id"/>. A transient entity (its <see cref="Id"/> is still the default
 /// value of <typeparamref name="TId"/>) is only equal to itself.
 /// </para>
+/// <para>
+/// Overlaps with <c>Efc.Fractalize.Domain.Entities.EntityBase&lt;TId&gt;</c>
+/// in the <c>Efc.Fractalize.Domain</c> package. Both are kept until the maintainers decide which one
+/// survives; do not mix them in the same model.
+/// </para>
 /// </remarks>
 /// <typeparam name="TId">Type of the identifier.</typeparam>
 public abstract class EntityBase<TId> : IEquatable<EntityBase<TId>>

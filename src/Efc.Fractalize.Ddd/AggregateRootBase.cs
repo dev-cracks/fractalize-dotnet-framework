@@ -4,6 +4,11 @@ namespace Efc.Fractalize.Ddd;
 /// Base class for aggregate roots: entities that own a consistency boundary and record the domain events
 /// raised while they change.
 /// </summary>
+/// <remarks>
+/// Overlaps with <c>Efc.Fractalize.Domain.Entities.AggregateRootBase&lt;TId&gt;</c>
+/// in the <c>Efc.Fractalize.Domain</c> package. Both are kept until the maintainers decide which one
+/// survives; do not mix them in the same model.
+/// </remarks>
 /// <typeparam name="TId">Type of the identifier.</typeparam>
 public abstract class AggregateRootBase<TId> : EntityBase<TId>
 {
