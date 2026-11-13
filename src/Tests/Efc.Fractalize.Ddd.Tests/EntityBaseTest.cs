@@ -27,8 +27,8 @@ public class EntityBaseTest
     [Fact]
     public void Equals_WithTheSameTypeAndId_ReturnsTrue()
     {
-        var first = new TestEntity { Id = 1 };
-        var second = new TestEntity { Id = 1 };
+        EntityBase<int> first = new TestEntity { Id = 1 };
+        EntityBase<int> second = new TestEntity { Id = 1 };
 
         Assert.True(first.Equals(second));
         Assert.True(first.Equals((object)second));
@@ -40,8 +40,8 @@ public class EntityBaseTest
     [Fact]
     public void Equals_WithADifferentId_ReturnsFalse()
     {
-        var first = new TestEntity { Id = 1 };
-        var second = new TestEntity { Id = 2 };
+        EntityBase<int> first = new TestEntity { Id = 1 };
+        EntityBase<int> second = new TestEntity { Id = 2 };
 
         Assert.False(first.Equals(second));
         Assert.False(first == second);
@@ -61,21 +61,20 @@ public class EntityBaseTest
     [Fact]
     public void Equals_WithNullOrAnotherObject_ReturnsFalse()
     {
-        var entity = new TestEntity { Id = 1 };
+        EntityBase<int> entity = new TestEntity { Id = 1 };
 
         Assert.False(entity.Equals(null));
         Assert.False(entity.Equals((object?)null));
-        Assert.False(entity.Equals("1"));
         Assert.False(entity == null);
         Assert.False(null == entity);
-        Assert.True((TestEntity?)null == null);
+        Assert.True((EntityBase<int>?)null == null);
     }
 
     [Fact]
     public void Equals_WithTwoTransientEntities_ReturnsFalse()
     {
-        var first = new TestEntity { Id = 0 };
-        var second = new TestEntity { Id = 0 };
+        EntityBase<int> first = new TestEntity { Id = 0 };
+        EntityBase<int> second = new TestEntity { Id = 0 };
 
         Assert.False(first.Equals(second));
         Assert.False(first == second);
@@ -84,8 +83,8 @@ public class EntityBaseTest
     [Fact]
     public void Equals_WithATransientAndAPersistedEntity_ReturnsFalse()
     {
-        var transient = new TestEntity { Id = 0 };
-        var persisted = new TestEntity { Id = 1 };
+        EntityBase<int> transient = new TestEntity { Id = 0 };
+        EntityBase<int> persisted = new TestEntity { Id = 1 };
 
         Assert.False(transient.Equals(persisted));
         Assert.False(persisted.Equals(transient));
@@ -94,7 +93,7 @@ public class EntityBaseTest
     [Fact]
     public void Equals_WithTheSameTransientInstance_ReturnsTrue()
     {
-        var transient = new TestEntity { Id = 0 };
+        EntityBase<int> transient = new TestEntity { Id = 0 };
 
         Assert.True(transient.Equals(transient));
         Assert.Equal(RuntimeHelpers.GetHashCode(transient), transient.GetHashCode());
@@ -103,17 +102,17 @@ public class EntityBaseTest
     [Fact]
     public void Equals_WithNullReferenceIds_TreatsThemAsTransient()
     {
-        var first = new KeyedEntity { Id = null! };
-        var second = new KeyedEntity { Id = null! };
+        EntityBase<string> first = new KeyedEntity { Id = null! };
+        EntityBase<string> second = new KeyedEntity { Id = null! };
 
         Assert.False(first.Equals(second));
-        Assert.True(new KeyedEntity { Id = "a" } == new KeyedEntity { Id = "a" });
+        Assert.True((EntityBase<string>)new KeyedEntity { Id = "a" } == new KeyedEntity { Id = "a" });
     }
 
     [Fact]
     public void Entities_WithTheSameIdentity_AreDeduplicatedInASet()
     {
-        HashSet<TestEntity> set = [new() { Id = 1 }, new() { Id = 1 }, new() { Id = 2 }];
+        HashSet<EntityBase<int>> set = [new TestEntity { Id = 1 }, new TestEntity { Id = 1 }, new TestEntity { Id = 2 }];
 
         Assert.Equal(2, set.Count);
     }

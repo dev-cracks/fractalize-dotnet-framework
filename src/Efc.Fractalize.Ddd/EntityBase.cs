@@ -72,7 +72,7 @@ public abstract class EntityBase<TId> : IEquatable<EntityBase<TId>>
 
     /// <inheritdoc />
     public override bool Equals(object? obj) =>
-        Equals(obj as EntityBase<TId>);
+        obj is EntityBase<TId> other && Equals(other);
 
     /// <inheritdoc />
     /// <remarks>
