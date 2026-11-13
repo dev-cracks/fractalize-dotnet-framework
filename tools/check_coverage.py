@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """Fails when the line coverage of the Cobertura reports under a folder is below a minimum.
 
-Lines are merged by (absolute source file, line number) across reports, so a line covered by any test
-project counts as covered once. Usage: check_coverage.py <results-dir> [--min 80]
+Lines are merged by (absolute source file, line number) across reports, so a line covered by any
+test project counts as covered once. Usage: check_coverage.py <results-dir> [--min 80]
 """
 import argparse
 import pathlib
@@ -19,9 +19,10 @@ def _normalise(path: str) -> str:
 def _absolute(filename: str, sources: list[str]) -> str:
     """Resolves a class filename against the <source> roots of its report.
 
-    Each report has its own roots (coverlet uses the common folder of the instrumented assemblies), so
-    the same file can appear under different relative names in different reports. Resolving it makes
-    the key unique: a line is neither counted twice nor confused with another file of the same name.
+    Each report has its own roots (coverlet uses the common folder of the instrumented assemblies),
+    so the same file can appear under different relative names in different reports. Resolving it
+    makes the key unique: a line is neither counted twice nor confused with another file of the same
+    name.
     """
     name = _normalise(filename)
     if posixpath.isabs(name) or PureWindowsPath(name).is_absolute() or not sources:

@@ -51,14 +51,14 @@ public class PublicBoundaryTest
     public void PublicAssemblies_ListEveryLibraryOfTheRepository()
     {
         var src = new DirectoryInfo(AppContext.BaseDirectory);
-        while (src is not null && !File.Exists(Path.Combine(src.FullName, "Efc.Fractalize.Framework.sln")))
+        while (src is not null && !File.Exists(Path.Join(src.FullName, "Efc.Fractalize.Framework.sln")))
         {
             src = src.Parent;
         }
 
         Assert.NotNull(src);
         var libraries = src.GetDirectories("Efc.Fractalize.*")
-            .Where(directory => File.Exists(Path.Combine(directory.FullName, directory.Name + ".csproj")))
+            .Where(directory => File.Exists(Path.Join(directory.FullName, directory.Name + ".csproj")))
             .Select(directory => directory.Name)
             .Order();
 
