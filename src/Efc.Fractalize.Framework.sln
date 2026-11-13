@@ -29,6 +29,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Efc.Fractalize.Ddd", "Efc.F
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Efc.Fractalize.Ddd.Tests", "Tests\Efc.Fractalize.Ddd.Tests\Efc.Fractalize.Ddd.Tests.csproj", "{5E416170-D140-411F-8655-FE7E92CD77CC}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Efc.Fractalize.Architecture.Tests", "Tests\Efc.Fractalize.Architecture.Tests\Efc.Fractalize.Architecture.Tests.csproj", "{9C1E7B3A-4D2F-4B8E-9A61-3F5D2C7E8B14}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -67,6 +69,10 @@ Global
 		{5E416170-D140-411F-8655-FE7E92CD77CC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5E416170-D140-411F-8655-FE7E92CD77CC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5E416170-D140-411F-8655-FE7E92CD77CC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9C1E7B3A-4D2F-4B8E-9A61-3F5D2C7E8B14}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9C1E7B3A-4D2F-4B8E-9A61-3F5D2C7E8B14}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9C1E7B3A-4D2F-4B8E-9A61-3F5D2C7E8B14}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9C1E7B3A-4D2F-4B8E-9A61-3F5D2C7E8B14}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -78,5 +84,6 @@ Global
 		{0B32F6BE-3E24-46AB-8C68-526EBA620993} = {85AF1F0A-C3D0-470F-A61A-D79250CF6E29}
 		{F39EA41E-E3F6-4EAA-8871-1B596A414A0B} = {85AF1F0A-C3D0-470F-A61A-D79250CF6E29}
 		{5E416170-D140-411F-8655-FE7E92CD77CC} = {85AF1F0A-C3D0-470F-A61A-D79250CF6E29}
+		{9C1E7B3A-4D2F-4B8E-9A61-3F5D2C7E8B14} = {85AF1F0A-C3D0-470F-A61A-D79250CF6E29}
 	EndGlobalSection
 EndGlobal
