@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Code coverage of the DDD core only (Efc.Fractalize.Ddd), used by the 90 % gate of ci.yml (ADR 0094, Q23).
+  Unlike coverlet.runsettings it does not exclude [Obsolete] or [ExcludeFromCodeCoverage] code: every line of
+  the package counts. ci.yml also fails if new [Obsolete] or [ExcludeFromCodeCoverage] attributes appear in it.
+-->
+<RunSettings>
+  <DataCollectionRunSettings>
+    <DataCollectors>
+      <DataCollector friendlyName="XPlat code coverage">
+        <Configuration>
+          <Format>cobertura</Format>
+          <Include>[Efc.Fractalize.Ddd]*</Include>
+          <ExcludeByAttribute>GeneratedCodeAttribute,CompilerGeneratedAttribute</ExcludeByAttribute>
+          <ExcludeByFile>**/obj/**/*.cs</ExcludeByFile>
+          <SkipAutoProps>true</SkipAutoProps>
+        </Configuration>
+      </DataCollector>
+    </DataCollectors>
+  </DataCollectionRunSettings>
+</RunSettings>
