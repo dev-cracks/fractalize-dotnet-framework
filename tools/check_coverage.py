@@ -28,7 +28,14 @@ def _absolute(filename: str, sources: list[str]) -> str:
     if posixpath.isabs(name) or PureWindowsPath(name).is_absolute() or not sources:
         return name
     candidates = [_normalise(posixpath.join(_normalise(source), name)) for source in sources]
-    return next((path for path in candidates if pathlib.Path(path).is_file()), candidates[0])
+    found = next((path for path in candidates if pathlib.Path(path).is_file()), None)
+    if found is not None:
+        return found
+    if len(candidates) > 1:
+        # Without the sources on disk the right root is unknown: the most specific one (the longest)
+        # is the safest guess, and the warning makes the ambiguity visible.
+        print(f"::warning::{filename} is not under any of {sources}; using the most specific root")
+    return max(candidates, key=len)
 
 
 def collect(results_dir: pathlib.Path) -> dict[tuple[str, int], bool]:

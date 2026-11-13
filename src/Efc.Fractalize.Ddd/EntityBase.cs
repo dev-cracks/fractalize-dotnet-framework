@@ -16,8 +16,9 @@ namespace Efc.Fractalize.Ddd;
 /// value of <typeparamref name="TId"/>) is only equal to itself.
 /// </para>
 /// <para>
-/// The type is taken from <see cref="GetUnproxiedType"/>, so that an ORM proxy (a runtime subclass) of an
-/// entity can override it and still be equal to the entity it stands for.
+/// The type is taken from <see cref="GetUnproxiedType"/>. With ORM proxies (runtime subclasses, such as the
+/// lazy-loading proxies of EF Core), override it in your entity to return the entity type, so that a proxy is
+/// equal to the entity it stands for.
 /// </para>
 /// <para>
 /// The hash code of a transient entity is its reference and the hash code of a persisted one is based on its
@@ -99,9 +100,15 @@ public abstract class EntityBase<TId> : IEquatable<EntityBase<TId>>
         IsTransient ? RuntimeHelpers.GetHashCode(this) : HashCode.Combine(GetUnproxiedType(), Id);
 
     /// <summary>
-    /// Type used to compare identities. Returns the runtime type; an ORM proxy overrides it to return the type
-    /// of the entity it stands for.
+    /// Type used to compare identities. Returns the runtime type, so a proxy type generated at runtime would
+    /// not be equal to the entity it stands for.
     /// </summary>
+    /// <remarks>
+    /// When an ORM creates proxies (for example the lazy-loading proxies of EF Core, which are Castle
+    /// DynamicProxy subclasses generated at runtime), override this method in your own entity so that every
+    /// proxy reports the entity type: <c>protected override Type GetUnproxiedType() => typeof(Order);</c>.
+    /// The framework does not detect proxy types by itself.
+    /// </remarks>
     /// <returns>The type that defines the identity of the entity.</returns>
     protected virtual Type GetUnproxiedType() => GetType();
 }
