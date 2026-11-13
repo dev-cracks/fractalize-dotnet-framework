@@ -25,11 +25,6 @@ namespace Efc.Fractalize.Ddd;
 /// hash-based collection (<see cref="HashSet{T}"/>, a dictionary key), the hash code changes and the
 /// collection can no longer find it: add entities to such collections once their <see cref="Id"/> is set.
 /// </para>
-/// <para>
-/// Overlaps with <c>Efc.Fractalize.Domain.Entities.EntityBase&lt;TId&gt;</c>
-/// in the <c>Efc.Fractalize.Domain</c> package. Both are kept until the maintainers decide which one
-/// survives; do not mix them in the same model.
-/// </para>
 /// </remarks>
 /// <typeparam name="TId">Type of the identifier.</typeparam>
 public abstract class EntityBase<TId> : IEquatable<EntityBase<TId>>

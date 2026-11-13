@@ -5,7 +5,7 @@
     <Authors>Daniel F Yepes Ortega</Authors>
     <Company>Dev Cracks</Company>
     <PackageId>Efc.Fractalize.Domain</PackageId>
-    <Description>Building blocks with no dependencies: entities, aggregate roots, domain events and the command and query contracts.</Description>
+    <Description>Command and query contracts. Brings Efc.Fractalize.Ddd, the common DDD base (entities, aggregate roots, domain events and value objects).</Description>
     <RepositoryUrl>https://github.com/dev-cracks/fractalize-dotnet-framework</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageProjectUrl>https://github.com/dev-cracks/fractalize-dotnet-framework</PackageProjectUrl>
@@ -16,4 +16,7 @@
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
   </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Efc.Fractalize.Ddd\Efc.Fractalize.Ddd.csproj" />
+  </ItemGroup>
 </Project>

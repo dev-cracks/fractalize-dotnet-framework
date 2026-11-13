@@ -47,6 +47,20 @@ public class PublicBoundaryTest
         Assert.Empty(outside);
     }
 
+    // Efc.Fractalize.Ddd is the common DDD base: no other assembly declares its own building blocks.
+    [Theory]
+    [MemberData(nameof(PublicAssemblies))]
+    public void DddBuildingBlocks_AreDeclaredOnlyInEfcFractalizeDdd(string assemblyName)
+    {
+        string[] buildingBlocks = ["EntityBase", "AggregateRootBase", "DomainEvent", "EventBase", "ValueObject"];
+        var duplicates = Assembly.Load(assemblyName).GetExportedTypes()
+            .Where(type => assemblyName != "Efc.Fractalize.Ddd"
+                && buildingBlocks.Any(block => type.Name.Contains(block, StringComparison.Ordinal)))
+            .Select(type => type.FullName);
+
+        Assert.Empty(duplicates);
+    }
+
     [Fact]
     public void PublicAssemblies_ListEveryLibraryOfTheRepository()
     {
