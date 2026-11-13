@@ -101,18 +101,26 @@ jobs:
       - name: Line coverage is at least COVERAGE_MIN
         run: python3 tools/check_coverage.py TestResults --min "$COVERAGE_MIN"
       # The DDD core must keep at least 90 % line coverage on its own (ADR 0094, Q23), measuring only
-      # Efc.Fractalize.Ddd and without excluding [Obsolete] code (coverlet.ddd.runsettings).
+      # Efc.Fractalize.Ddd and excluding no attribute (coverlet.ddd.runsettings).
       - name: Line coverage of Efc.Fractalize.Ddd is at least DDD_COVERAGE_MIN
         run: >-
           dotnet test src/Tests/Efc.Fractalize.Ddd.Tests --no-build -c Release
           --collect "XPlat Code Coverage" --settings coverlet.ddd.runsettings
           --results-directory TestResults/ddd
           && python3 tools/check_coverage.py TestResults/ddd --min "$DDD_COVERAGE_MIN"
-      # Nothing in the DDD core may hide from coverage: no [Obsolete] or [ExcludeFromCodeCoverage] at all.
-      - name: No new [Obsolete] or [ExcludeFromCodeCoverage] in Efc.Fractalize.Ddd
+      # Nothing in the DDD core may hide from that gate. Checked on the result: every source file with code
+      # in the package PDB must be in the coverage report (an attribute named ExcludeFrom*Coverage, of any
+      # namespace, makes coverlet drop it)...
+      - name: Every source file of Efc.Fractalize.Ddd is in its coverage report
+        run: >-
+          DDD_COVERAGE_REPORT="$PWD/TestResults/ddd"
+          dotnet test src/Tests/Efc.Fractalize.Architecture.Tests --no-build -c Release
+          --filter "FullyQualifiedName~DddCoverageCompletenessTest"
+      # ...and on the source: no exclusion, generated-code or obsolete attribute, nor an alias that hides one.
+      - name: No coverage-hiding attributes in Efc.Fractalize.Ddd
         run: |
-          found="$(grep -rnwE 'Obsolete|ObsoleteAttribute|ExcludeFromCodeCoverage|ExcludeFromCodeCoverageAttribute' \
-            --include='*.cs' src/Efc.Fractalize.Ddd || true)"
+          found="$(grep -rnE 'ExcludeFrom[A-Za-z0-9_]*Coverage|GeneratedCode|CompilerGenerated|Obsolete|using +[A-Za-z0-9_]+ *= *.*Attribute' \
+            --include='*.cs' --exclude-dir=obj --exclude-dir=bin src/Efc.Fractalize.Ddd || true)"
           if [ -n "$found" ]; then
             echo "::error::Efc.Fractalize.Ddd must not hide code from coverage:"
             echo "$found"

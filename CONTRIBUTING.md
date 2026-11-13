@@ -21,8 +21,9 @@ The solution lives in [`src/Efc.Fractalize.Framework.sln`](src/Efc.Fractalize.Fr
 the libraries are `Efc.Fractalize.Domain`, `Efc.Fractalize.Ddd`, `Efc.Fractalize.Application` and
 `Efc.Fractalize.Infrastructure`, and their tests are under `src/Tests/`. The DDD core
 (`Efc.Fractalize.Ddd`) must keep at least 90 % line coverage with its own tests, measured with
-[`coverlet.ddd.runsettings`](coverlet.ddd.runsettings), which excludes nothing but generated code; CI also rejects any
-`[Obsolete]` or `[ExcludeFromCodeCoverage]` attribute in it.
+[`coverlet.ddd.runsettings`](coverlet.ddd.runsettings), which excludes no attribute. CI also checks that every
+source file with code is in that report and rejects coverage-hiding attributes (`ExcludeFrom*Coverage`,
+`GeneratedCode`, `CompilerGenerated`, `Obsolete`) and attribute aliases in the package.
 
 ```bash
 # Restore, build with warnings as errors and run the tests before opening a pull request.
@@ -32,6 +33,7 @@ dotnet test src/Efc.Fractalize.Framework.sln --no-build -c Release --collect "XP
 python3 tools/check_coverage.py TestResults --min 80
 dotnet test src/Tests/Efc.Fractalize.Ddd.Tests --no-build -c Release --collect "XPlat Code Coverage" --settings coverlet.ddd.runsettings --results-directory TestResults/ddd
 python3 tools/check_coverage.py TestResults/ddd --min 90
+DDD_COVERAGE_REPORT="$PWD/TestResults/ddd" dotnet test src/Tests/Efc.Fractalize.Architecture.Tests --no-build -c Release --filter "FullyQualifiedName~DddCoverageCompletenessTest"
 
 # With only a newer runtime installed (no 10.0 runtime), let the tests roll forward to it:
 DOTNET_ROLL_FORWARD=Major dotnet test src/Efc.Fractalize.Framework.sln --no-build -c Release
