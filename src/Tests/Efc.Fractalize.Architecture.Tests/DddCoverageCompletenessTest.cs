@@ -50,27 +50,17 @@ public class DddCoverageCompletenessTest
         using var provider = MetadataReaderProvider.FromPortablePdbStream(stream);
         var reader = provider.GetMetadataReader();
 
-        var files = new SortedSet<string>(StringComparer.Ordinal);
-        foreach (var handle in reader.MethodDebugInformation)
-        {
-            // Members the compiler synthesizes (record equality, ToString...) are not measured by coverlet.
-            // A [CompilerGenerated] written by hand is rejected by the source check of ci.yml.
-            var method = assembly.ManifestModule.ResolveMethod(MetadataTokens.GetToken(handle.ToDefinitionHandle()));
-            if (method is null || IsCompilerGenerated(method))
-            {
-                continue;
-            }
+        // Members the compiler synthesizes (record equality, ToString...) are not measured by coverlet.
+        // A [CompilerGenerated] written by hand is rejected by the source check of ci.yml.
+        var files = reader.MethodDebugInformation
+            .Where(handle => assembly.ManifestModule.ResolveMethod(
+                MetadataTokens.GetToken(handle.ToDefinitionHandle())) is { } method && !IsCompilerGenerated(method))
+            .SelectMany(handle => reader.GetMethodDebugInformation(handle).GetSequencePoints())
+            .Where(point => !point.IsHidden)
+            .Select(point => ToProjectRelative(reader.GetString(reader.GetDocument(point.Document).Name)))
+            .OfType<string>();
 
-            foreach (var point in reader.GetMethodDebugInformation(handle).GetSequencePoints())
-            {
-                if (!point.IsHidden && ToProjectRelative(reader.GetString(reader.GetDocument(point.Document).Name)) is { } file)
-                {
-                    files.Add(file);
-                }
-            }
-        }
-
-        return files;
+        return new SortedSet<string>(files, StringComparer.Ordinal);
     }
 
     private static bool IsCompilerGenerated(MethodBase method) =>
@@ -81,19 +71,13 @@ public class DddCoverageCompletenessTest
     {
         var root = XDocument.Load(report).Root!;
         var sources = root.Descendants("source").Select(source => source.Value).ToArray();
-        foreach (var filename in root.Descendants("class").Select(cls => (string?)cls.Attribute("filename") ?? ""))
-        {
-            var candidates = Path.IsPathRooted(filename) || sources.Length == 0
+        return root.Descendants("class")
+            .Select(cls => (string?)cls.Attribute("filename") ?? "")
+            .SelectMany(filename => Path.IsPathRooted(filename) || sources.Length == 0
                 ? [filename]
-                : sources.Select(source => Path.Join(source, filename));
-            foreach (var candidate in candidates)
-            {
-                if (ToProjectRelative(candidate) is { } file)
-                {
-                    yield return file;
-                }
-            }
-        }
+                : sources.Select(source => Path.Join(source, filename)))
+            .Select(ToProjectRelative)
+            .OfType<string>();
     }
 
     /// <summary>Path relative to the project folder, or null for files outside it or generated under obj/.</summary>
