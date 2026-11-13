@@ -6,11 +6,6 @@ namespace Efc.Fractalize.Ddd;
 /// </summary>
 /// <remarks>
 /// <para>
-/// Overlaps with <c>Efc.Fractalize.Domain.Entities.AggregateRootBase&lt;TId&gt;</c>
-/// in the <c>Efc.Fractalize.Domain</c> package. Both are kept until the maintainers decide which one
-/// survives; do not mix them in the same model.
-/// </para>
-/// <para>
 /// Not thread-safe: an aggregate is meant to be changed by one operation at a time.
 /// </para>
 /// </remarks>

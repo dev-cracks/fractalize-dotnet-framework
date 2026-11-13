@@ -50,11 +50,12 @@ order.ClearDomainEvents();
 Take time from an injected `TimeProvider` (`TimeProvider.System` in production, a fake in tests), never from
 `DateTimeOffset.UtcNow`.
 
-## Overlap with `Efc.Fractalize.Domain`
+## Relation with `Efc.Fractalize.Domain`
 
-`Efc.Fractalize.Domain` also declares `EntityBase<TId>`, `AggregateRootBase<TId>` and domain event types
-(`IDomainEvent`, `EventBase`) in other namespaces. Both packages are kept for now, until the maintainers
-decide which types survive. Do not mix the two families in the same model.
+This package is the common DDD base of the framework: `Efc.Fractalize.Domain` depends on it and no longer declares
+its own entities, aggregate roots or domain events. The
+[migration table](https://github.com/dev-cracks/fractalize-dotnet-framework#migrating-the-ddd-building-blocks-of-efcfractalizedomain)
+maps the removed types to the ones of this package.
 
 ## Origin
 

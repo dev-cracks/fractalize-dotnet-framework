@@ -17,8 +17,8 @@
 
 | Package | Contents |
 | --- | --- |
-| `Efc.Fractalize.Domain` | Building blocks with no dependencies: `EntityBase`, `AggregateRootBase`, `IDomainEvent`, `EventBase`, and the `ICommand` / `IQuery` contracts with their handlers and dispatchers |
-| [`Efc.Fractalize.Ddd`](src/Efc.Fractalize.Ddd/README.md) | Domain-driven design core with no dependencies: `EntityBase` with identity equality, `AggregateRootBase` with domain events, `DomainEventBase`, `ValueObjectBase`, `DateRange`, and the `IReadRepository` / `IRepository` / `IUnitOfWorkBase` contracts. It overlaps with `Efc.Fractalize.Domain` until the maintainers decide which types survive |
+| `Efc.Fractalize.Domain` | The `ICommand` / `IQuery` contracts with their handlers and dispatchers. Depends on `Efc.Fractalize.Ddd`, the common DDD base |
+| [`Efc.Fractalize.Ddd`](src/Efc.Fractalize.Ddd/README.md) | Domain-driven design core with no dependencies: `EntityBase` with identity equality, `AggregateRootBase` with domain events, `DomainEventBase`, `ValueObjectBase`, `DateRange`, and the `IReadRepository` / `IRepository` / `IUnitOfWorkBase` contracts. |
 | `Efc.Fractalize.Application` | `CommandDispatcher` and its fluent configurator, `CommandDispatcherConfigurator` (`AddCommandDispatcher`) |
 | `Efc.Fractalize.Infrastructure` | `QueryDispatcher` and `QueryDispatcherConfigurator` (`AddQueryDispatcher`), `CqrsConfigurator` (`AddCqrsDispatchers`: commands and queries in one call) and `OptionsConfigurator` (`AddValidatedOptions`: options validated at startup). Depends on `Efc.Fractalize.Application` |
 
@@ -94,6 +94,33 @@ Differences to keep in mind:
   the per-message `AddCommandDispatcher<TCommand>()` / `AddQueryDispatcher<TQuery, TResult>()` calls are optional.
 - `AddValidatedOptions` always registers the options and validates them at startup: a missing or invalid section
   fails when the host starts, while `AddConfigurationSection` skipped missing sections and never validated.
+
+### Migrating the DDD building blocks of `Efc.Fractalize.Domain`
+
+`Efc.Fractalize.Ddd` is the common DDD base: `Efc.Fractalize.Domain` depends on it and no longer declares its own
+entities, aggregate roots or domain events. Replace them as follows:
+
+| Removed from `Efc.Fractalize.Domain` | Replacement in `Efc.Fractalize.Ddd` |
+| --- | --- |
+| `Efc.Fractalize.Domain.Entities.EntityBase<TId>` | `Efc.Fractalize.Ddd.EntityBase<TId>` |
+| `Efc.Fractalize.Domain.Entities.AggregateRootBase<TId>` | `Efc.Fractalize.Ddd.AggregateRootBase<TId>` |
+| `Efc.Fractalize.Domain.Events.IDomainEvent` (an interface) | `Efc.Fractalize.Ddd.DomainEventBase` (an abstract class): events that were records or derived from another base class do not migrate one to one |
+| `Efc.Fractalize.Domain.Events.EventBase` | `Efc.Fractalize.Ddd.DomainEventBase`, whose `Name` is required |
+| Public constructors of `EventBase` | No equivalent: set `Name` and `Date` with an object initializer |
+| `EntityBase(TId id)` constructor, `protected set` on `Id` | `required` init-only `Id`: `new Order { Id = id }`, or set it in the derived constructor marked `[SetsRequiredMembers]` |
+| `where TId : notnull` on `AggregateRootBase<TId>` | No constraint |
+| `AggregateRootBase.AddEvent(IDomainEvent)` | `AddDomainEvent(DomainEventBase)` |
+| `AggregateRootBase.ClearEvents()` | `ClearDomainEvents()` |
+| `EntityBase.Events` (`IReadOnlyList<IDomainEvent>`, on every entity) | `AggregateRootBase.DomainEvents` (`IReadOnlyCollection<DomainEventBase>`, only aggregate roots record events) |
+| Protected `_events` field | No equivalent: use `AddDomainEvent` and `DomainEvents` |
+| `EventBase.CreatedAt` (set from `DateTimeOffset.UtcNow`) | `DomainEventBase.Date`, taken from an injected `TimeProvider` |
+| `EventBase.EventId`, `CorrelationId`, `CausationId` | No equivalent: declare them in your own event type if you need them |
+| `EntityBase.ToString()` (`"Type [Id=…]"`) | No override: write it in your entity if you need it |
+| `==` and `!=` on entities (reference comparison) | Identity comparison, like `Equals` |
+
+Equality also changes: two entities are equal only when the type reported by `GetUnproxiedType()` (the runtime
+type unless an entity overrides it for ORM proxies) and the non-default `Id` match; a transient entity (default
+`Id`) is only equal to itself.
 
 ## 🛠️ Building from source
 
