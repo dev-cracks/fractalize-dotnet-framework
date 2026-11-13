@@ -17,6 +17,7 @@
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
   </PropertyGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Efc.Fractalize.Application\Efc.Fractalize.Application.csproj" />
     <ProjectReference Include="..\Efc.Fractalize.Domain\Efc.Fractalize.Domain.csproj" />
   </ItemGroup>
   <ItemGroup>
@@ -24,6 +25,7 @@
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.15" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.15" />
     <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="10.0.15" />
+    <PackageReference Include="Microsoft.Extensions.Options.DataAnnotations" Version="10.0.15" />
     <PackageReference Include="Scrutor" Version="6.1.0" />
   </ItemGroup>
 </Project>
