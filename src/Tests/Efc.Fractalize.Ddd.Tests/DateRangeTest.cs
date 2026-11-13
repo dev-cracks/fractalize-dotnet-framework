@@ -124,11 +124,40 @@ public class DateRangeTest
     }
 
     [Fact]
-    public void Overlaps_WithARangeThatStartsAtTheEnd_ReturnsFalse()
+    public void Overlaps_WithARangeThatStartsAtTheEnd_ReturnsFalseBothWays()
     {
         var range = new DateRange(Start, Start.AddHours(2));
         var adjacent = new DateRange(Start.AddHours(2), Start.AddHours(3));
 
         Assert.False(range.Overlaps(adjacent));
+        Assert.False(adjacent.Overlaps(range));
+    }
+
+    [Fact]
+    public void Overlaps_WithAnIdenticalRange_ReturnsTrue()
+    {
+        var range = new DateRange(Start, Start.AddHours(2));
+
+        Assert.True(range.Overlaps(new DateRange(Start, Start.AddHours(2))));
+        Assert.True(range.Overlaps(range));
+    }
+
+    // Regression test: Overlaps(null) used to throw NullReferenceException.
+    [Fact]
+    public void Overlaps_WithNull_ThrowsArgumentNullException()
+    {
+        var range = new DateRange(Start, Start.AddHours(2));
+
+        var exception = Assert.Throws<ArgumentNullException>(() => range.Overlaps(null!));
+        Assert.Equal("dateRange", exception.ParamName);
+    }
+
+    // Characterization of the inherited behaviour: the message is passed as the parameter name.
+    [Fact]
+    public void Constructor_WithEndNotLaterThanStart_PassesTheMessageAsParamName()
+    {
+        var exception = Assert.Throws<ArgumentOutOfRangeException>(() => new DateRange(Start, Start));
+
+        Assert.StartsWith("endDate should be higher than ", exception.ParamName);
     }
 }
