@@ -1,3 +1,5 @@
+using Microsoft.Extensions.Time.Testing;
+
 namespace Efc.Fractalize.Ddd.Tests;
 
 public class TimeAbstractionTest
@@ -16,17 +18,29 @@ public class TimeAbstractionTest
     }
 
     [Fact]
-    public void DomainEventDate_IsStampedFromATimeProvider()
+    public void AggregateEvents_StampedFromATimeProvider_FollowItsClock()
     {
-        TimeProvider timeProvider = new FixedTimeProvider(TestClock.Now);
+        var timeProvider = new FakeTimeProvider(TestClock.Now);
+        var order = TestOrder.Place(timeProvider);
 
-        var domainEvent = new TestDomainEvent { Name = "created", Date = timeProvider.GetUtcNow() };
+        timeProvider.Advance(TimeSpan.FromMinutes(5));
+        order.Rename(timeProvider);
 
-        Assert.Equal(TestClock.Now, domainEvent.Date);
+        Assert.Equal(
+            [TestClock.Now, TestClock.Now.AddMinutes(5)],
+            order.DomainEvents.Select(domainEvent => domainEvent.Date));
     }
 
-    private sealed class FixedTimeProvider(DateTimeOffset now) : TimeProvider
+    private sealed class TestOrder : AggregateRootBase<Guid>
     {
-        public override DateTimeOffset GetUtcNow() => now;
+        public static TestOrder Place(TimeProvider timeProvider)
+        {
+            var order = new TestOrder { Id = Guid.NewGuid() };
+            order.AddDomainEvent(new TestDomainEvent { Name = "placed", Date = timeProvider.GetUtcNow() });
+            return order;
+        }
+
+        public void Rename(TimeProvider timeProvider) =>
+            AddDomainEvent(new TestDomainEvent { Name = "renamed", Date = timeProvider.GetUtcNow() });
     }
 }

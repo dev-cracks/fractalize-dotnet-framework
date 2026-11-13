@@ -1,23 +1,27 @@
+using System.Runtime.CompilerServices;
+
 namespace Efc.Fractalize.Ddd.Tests;
 
 public class DomainEventBaseTest
 {
     [Fact]
-    public void NameAndDate_AreSetByTheDerivedEventAndCanChange()
+    public void NameAndDate_AreSetWhenTheEventIsCreated()
     {
         var domainEvent = new TestDomainEvent { Name = "created", Date = TestClock.Now };
 
-        domainEvent.Name = "renamed";
-        domainEvent.Date = TestClock.Now.AddMinutes(1);
-
-        Assert.Equal("renamed", domainEvent.Name);
-        Assert.Equal(TestClock.Now.AddMinutes(1), domainEvent.Date);
+        Assert.Equal("created", domainEvent.Name);
+        Assert.Equal(TestClock.Now, domainEvent.Date);
     }
 
-    [Fact]
-    public void NameAndDate_AreAbstract()
+    // Name and Date used to have public setters: an event is a fact and cannot change once raised.
+    [Theory]
+    [InlineData(nameof(DomainEventBase.Name))]
+    [InlineData(nameof(DomainEventBase.Date))]
+    public void NameAndDate_AreAbstractAndInitOnly(string propertyName)
     {
-        Assert.True(typeof(DomainEventBase).GetProperty(nameof(DomainEventBase.Name))!.GetMethod!.IsAbstract);
-        Assert.True(typeof(DomainEventBase).GetProperty(nameof(DomainEventBase.Date))!.GetMethod!.IsAbstract);
+        var property = typeof(DomainEventBase).GetProperty(propertyName)!;
+
+        Assert.True(property.GetMethod!.IsAbstract);
+        Assert.Contains(typeof(IsExternalInit), property.SetMethod!.ReturnParameter.GetRequiredCustomModifiers());
     }
 }

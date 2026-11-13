@@ -14,7 +14,7 @@ dotnet add package Efc.Fractalize.Ddd
 | --- | --- |
 | `EntityBase<TId>` | Entity with an init-only `Id` and identity equality (`Equals`, `GetHashCode`, `==`, `!=`). Transient entities (default `Id`) are only equal to themselves |
 | `AggregateRootBase<TId>` | Entity that records domain events: `AddDomainEvent`, `DomainEvents` and `ClearDomainEvents()` |
-| `DomainEventBase` | Base class for domain events, with `Name` and `Date` |
+| `DomainEventBase` | Base class for domain events, with init-only `Name` and `Date` |
 | `ValueObjectBase` | Base record for value objects (record value equality) |
 | `ValueObjectLegacyBase` | Obsolete class-based value object with `IComparable`; use `ValueObjectBase` |
 | `DateRange` | Value object for a period: validation, `Overlaps` and duration in minutes |
@@ -29,9 +29,9 @@ using Efc.Fractalize.Ddd;
 
 public sealed class OrderPlaced : DomainEventBase
 {
-    public override required string Name { get; set; }
+    public override required string Name { get; init; }
 
-    public override required DateTimeOffset Date { get; set; }
+    public override required DateTimeOffset Date { get; init; }
 }
 
 public sealed class Order : AggregateRootBase<Guid>
